@@ -20,7 +20,8 @@ public class FTPServer{
     // A  faire : on doit ouvrir le socket du server puis dans un try and catch
     //  recevoir les donnée du client et le lancer ou sur un connection passive ou active
     // ensuite ouvrir autre fonction avec un extends threads ou le client se connecte
-    // et fais ces truc ( en gros faire un run() )
+    // et fais ces truc ( en gros faire un run() ) lorsque que celui-ci se connecte
+    // on lui donne un certain argument pour voir si il peut oui ou non aller voir les fichier privé
     // Notre Protocol devra pourvoir faire plusieurs truc on va donc implémenter
     // ou une class contenant plusieurs function utile ou alors une class pour chaque
     // fonction . 
