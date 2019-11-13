@@ -24,4 +24,12 @@ public class FTPServer{
     // on lui donne un certain argument pour voir si il peut oui ou non aller voir les fichier privé
     // Notre Protocol devra pourvoir faire plusieurs truc on va donc implémenter
     // ou une class contenant plusieurs function utile ou alors une class pour chaque
-    // fonction . 
+    // fonction .( perso je pense une classe pour chaque remplie de petit opération définie dans une plus grand class avec des function pour chacune de ces petite opération)
+    //
+    //Attention a pas oublier les commentaire dans les codes et une intro a chque code
+    //
+    // ne pas oublier les opérations dans l'assignement page 6 (au dessus)
+    //
+    // c'est tout ce que j'ai a dire a toi Vic
+    //
+    //
