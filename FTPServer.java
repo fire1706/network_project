@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.awt.*;
 import javax.imageIO.*;
+// ICI le serveur va seulement attendre pour un premier message , lorsqu'il en recoit un il créee la connection quel soit passive ou active et lorsque celle-ci est crée  on lance une nouvelle threads pour le reste du programme .
 
 public class FTPServer{
 
@@ -14,7 +15,7 @@ public class FTPServer{
     try{
       int maxThreads = Integer.parseInt(args[0]);
     }catch(NumberFormatException e){
-      System.out.println("We couldn't parse correctly the maxThreads number ! "); 
+      System.out.println("We couldn't parse correctly the maxThreads number ! ");
     }
 
     // A  faire : on doit ouvrir le socket du server puis dans un try and catch
