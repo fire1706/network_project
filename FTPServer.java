@@ -14,7 +14,7 @@ public class FTPServer{
     try{
       int maxThreads = Integer.parseInt(args[0]);
     }catch(NumberFormatException e){
-      System.out.println("We couldn't parse correctly the maxThreads number ! ");
+      System.out.println("We couldn't parse correctly the maxThreads number ! "); 
     }
 
     // A  faire : on doit ouvrir le socket du server puis dans un try and catch
