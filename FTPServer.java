@@ -19,6 +19,52 @@ public class FTPServer{
       System.out.println("We couldn't parse correctly the maxThreads number ! ");
     }
 
+    newFixedThreadPool(maxThreads);
+
+    try{
+      ServerSocket serverSocket = new ServerSocket(2170);// Port number a changer
+
+      while(true){
+        Socket managementSocket = serverSocket.accept();
+        managementSocket.setSoTimeout(3780728242);
+
+        Management newconnection = new Management(managementSocket);
+        System.out.println("New connection incoming");
+        execute(newconnection);
+        //newconnection.start();
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // A  faire : on doit ouvrir le socket du server puis dans un try and catch
     //  recevoir les donnée du client et le lancer ou sur un connection passive ou active
     // ensuite ouvrir autre fonction avec un extends threads ou le client se connecte
