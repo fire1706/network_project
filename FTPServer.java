@@ -4,7 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.awt.*;
 import javax.imageIO.*;
-// ICI le serveur va seulement attendre pour un premier message , lorsqu'il en recoit un il créee la connection quel soit passive ou active et lorsque celle-ci est crée  on lance une nouvelle threads pour le reste du programme .
+// ICI le serveur va seulement ouvirr un nouveau thread pour chque connection
+// attetion a gérer le  nombre thread maximum
 
 public class FTPServer{
 

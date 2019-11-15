@@ -1,0 +1,1 @@
+// gère la connection active
