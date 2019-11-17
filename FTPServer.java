@@ -3,7 +3,7 @@ import java.lang.*;
 import java.io.*;
 import java.net.*;
 import java.awt.*;
-import javax.imageIO.*;
+import javax.imageio.ImageIO;
 // ICI le serveur va seulement ouvirr un nouveau thread pour chque connection
 // attetion a gérer le  nombre thread maximum
 
@@ -12,28 +12,32 @@ public class FTPServer{
   public static void main(String[] args) throws Exception{
 
     // Firstly we take as an argument the Maxthreadpool
-    int maxThreads = 1;// We initiate is value to one
+    int maxThread = 1 ;// We initiate is value to one
     try{
-      int maxThreads = Integer.parseInt(args[0]);
+      maxThread = Integer.parseInt(args[0]);
     }catch(NumberFormatException e){
       System.out.println("We couldn't parse correctly the maxThreads number ! ");
     }
 
-    newFixedThreadPool(maxThreads);
+
 
     try{
       ServerSocket serverSocket = new ServerSocket(2170);// Port number a changer
 
       while(true){
         Socket managementSocket = serverSocket.accept();
-        managementSocket.setSoTimeout(3780728242);
+        managementSocket.setSoTimeout(728242);
 
-        Management newconnection = new Management(managementSocket);
+        Management newconnection = new Management(managementSocket/*,maxThread*/);
         System.out.println("New connection incoming");
-        execute(newconnection);
+        newconnection.start();
         //newconnection.start();
       }
+    }catch(IOException e){
+      System.out.println(e.getMessage());
     }
+  }
+}
 
 
 
