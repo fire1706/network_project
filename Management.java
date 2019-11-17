@@ -12,3 +12,13 @@ public class Management extends Thread {
 
     @Override
     public void run(){
+      try{
+        System.println.out('Let''s start the game !');
+
+        input = new BufferedReader(socketManagement.getInputStream());
+        output= new PrintWriter(socketManagement.getOutputStream());
+        input.readLine();
+
+        
+
+      }
