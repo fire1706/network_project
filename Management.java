@@ -24,8 +24,9 @@ public class Management extends Thread {
           PrintWriter output= new PrintWriter(outStream);
           String inString = input.readLine();
 
-          if(inString == "PASV"){
+          if(inString == "PASV\r\n"){
             // appeler le truc passif
+            int connetPASV(socketManagement, inString);
           }else{
             // appeler le truc actif
           }

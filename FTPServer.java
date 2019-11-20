@@ -22,7 +22,7 @@ public class FTPServer{
 
 
     try{
-      ServerSocket serverSocket = new ServerSocket(2170);// Port number a changer
+      ServerSocket serverSocket = new ServerSocket(2106);// Port number a changer
 
       while(true){
         Socket managementSocket = serverSocket.accept();
