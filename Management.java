@@ -24,15 +24,20 @@ public class Management extends Thread {
           PrintWriter output= new PrintWriter(outStream);
           String inString = input.readLine();
 
-          if(inString == "PASV\r\n"){
-            // appeler le truc passif
-            int connetPASV(socketManagement, inString);
-          }else{
-            // appeler le truc actif
+          int isconnected = 0;
+          while(isconnected == 0){
+            if(inString == "PASV\r\n"){
+              // appeler le truc passif
+              isconnected =  connetPASV(socketManagement, inString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
+            }else{
+              // appeler le truc actif
+              isconnected = connetACTV(socketManagement, inString);//idem que ligne (cette ligne)-3;
+            }
           }
           System.out.println("Client is connected");
 
           System.out.println("Let's do the authentification");
+          int typeOfConnection = 0; // O normal , 1 can access private folder
           //Appeler la fonction Athentification
 
           // Pour la suite crée un menu et répondre au demande du client avec les fonction de FileGestion
