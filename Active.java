@@ -28,16 +28,16 @@ public class Active{
       InputStream inStream = connection.getInputStream();
       OutputStream outStream = connection.getOutputStream();
 
-      outStream.write("SYN".getBytes());
+      outStream.write("SYN\r\n".getBytes());
 
 
       while(true){
         BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
         inString = input.readLine();
-
-        if(inString == "SYN,ACK\r\n"){
+        System.out.println("Hello man");
+        if(inString.equals("SYN,ACK")){
           outStream.write("ACK\r\n".getBytes());
-          outStream.write("200 PORT command succesful".getBytes());
+          outStream.write("200 PORT command succesful\r\n".getBytes());
           System.out.println("Active Connection established with succes!");
           return 1;
         }
