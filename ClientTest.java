@@ -19,10 +19,26 @@ public class ClientTest{
 				message = reader.readLine();
 				if(message == null || message.length()<0) //verification message is ok
 					break;
-				if (message.startsWith("SYN")){
+				if (message.equals("SYN")){
+					System.out.println(message);
 					System.out.println("SYN bien reçu, active fonctionne");
+					out.write("SYN,ACK\r\n".getBytes());
 					break;
 				} 
+					
+			}//end of while
+
+			while ( true ) {
+				message = reader.readLine();
+				if(message == null || message.length()<0) //verification message is ok
+					break;
+				if (message.equals("ACK")){
+					System.out.println("ACK bien reçu, active fonctionne");
+				} 
+				if (message.equals("200 PORT command succesful")){
+					System.out.println("200 PORT command succesful bien recu");
+					break;
+				}
 					
 			}//end of while
 
