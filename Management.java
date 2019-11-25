@@ -31,6 +31,10 @@ public class Management extends Thread {
             	Passive pass = new Passive();
             	isconnected =  pass.connetPASV(socketManagement, inString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
               //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
+            }else if(inString == null || inString.length()<0){
+              System.out.println("Mauvaise Réception du message dans le InputStream");
+              //attention il faut faire un truc en plus pour gérer ce cas mais pas tout de suite 
+
             }else{
               // appeler le truc actif
             	Active act = new Active();
