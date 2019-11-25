@@ -5,7 +5,7 @@ import java.net.*;
 import java.awt.*;
 import javax.imageio.ImageIO;
 // ICI le serveur va seulement ouvirr un nouveau thread pour chque connection
-// attetion a gérer le  nombre thread maximum
+// attetion a gérer le  nombre thread maximum cfr section 3 de l'assingment
 
 public class FTPServer{
 
@@ -15,6 +15,7 @@ public class FTPServer{
     int maxThread = 1 ;// We initiate is value to one
     try{
       maxThread = Integer.parseInt(args[0]);
+
     }catch(NumberFormatException e){
       System.out.println("We couldn't parse correctly the maxThreads number ! ");
     }
@@ -23,7 +24,7 @@ public class FTPServer{
 
     try{
       ServerSocket serverSocket = new ServerSocket(2106);// Port number a changer
-
+      serverSocket.setSoTimeout(1000000);
       while(true){
         Socket managementSocket = serverSocket.accept();
         managementSocket.setSoTimeout(728242);
