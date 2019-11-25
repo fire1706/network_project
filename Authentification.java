@@ -33,8 +33,11 @@ public class Authentification{
           }
           else if(inString.contains("Sam")){
             outStream.write("331\r\n".getBytes());
-            input = new BufferedReader(new InputStreamReader(inStream));
+            // ATTENTION ne pas ré-instancier le bufferedReader sinon on perd le STREAM
+            //input = new BufferedReader(new InputStreamReader(inStream));
             inString = input.readLine();
+            System.out.println(inString);
+            System.out.println("Checking password");
             if(inString.contains("PASS") && inString.contains("123456")){
               outStream.write("230\r\n".getBytes());
               return 1;
