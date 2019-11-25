@@ -41,6 +41,18 @@ public class ClientTest{
 				}
 					
 			}//end of while
+			out.write("USER Sam\r\n".getBytes());
+			out.write("PASS 123456\r\n".getBytes());
+
+			while ( true ) {
+				message = reader.readLine();
+				System.out.println(message);
+				if(message == null || message.length()<0) //verification message is ok
+					break;
+				if (message.equals("230")){
+					System.out.println("Mot de passe correct");
+				} 
+			}
 
 			socketClient.close();
 		}catch(UnknownHostException e){
