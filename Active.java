@@ -33,7 +33,7 @@ public class Active{
 
       while(true){
         BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-        inString = input.readLine();
+        inString = input.readLine(); //j'aime pas trop le fait qu'on utilise inString qui est un argument on en parle à l'occasion
         System.out.println("Hello man");
         if(inString.equals("SYN,ACK")){
           outStream.write("ACK\r\n".getBytes());
