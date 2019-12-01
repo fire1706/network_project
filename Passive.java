@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 //    --------------
 
 public class Passive{
-  public int connetPASV(Socket connection,String inString){
+  public int connetPASV(Socket connection, Socket data, String inString){
     // On vérifie que la demande est bien pour un connection passive
     if(!(inString == "PASV\r\n")){
       return 0; // pour dire que la connection a échoué
@@ -29,6 +29,13 @@ public class Passive{
       // vérifier quel port number il faut envoyer
       String message = new String("227 Entering Passive Mode("+host+",122,8)\r\n");
       outStream.write(message.getBytes());
+      int port = 122*256+8; // a changer avec le port number que l'on utilise
+
+
+      System.out.println(connection.getPort());
+      ServerSocket newsocket = new ServerSocket(port);
+      data  = newsocket.accept();
+      System.out.println(connection.getPort());
 
 
       while(true){

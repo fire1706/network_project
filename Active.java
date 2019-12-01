@@ -17,7 +17,7 @@ import javax.imageio.ImageIO;
 //    --------------
 
 public class Active{
-  public int connetACTV(Socket connection,String inString){
+  public int connetACTV(Socket connection, Socket data, String inString){
     // On vérifie que la demande est bien pour un connection passive
     if(inString == "PASV\r\n"){ // voir si il faudrait pas regarder plus en détail ce qui est envoyer : ok
       return 0; // pour dire que la connection a échoué

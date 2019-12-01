@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 public class FTPServer{
 
-  public static void main(String[] args) throws Exception{
+  public static void main(String[] args) throws Exception{// pas sur que on doit garder le throws exception
 
     // Firstly we take as an argument the Maxthreadpool
     int maxThread = 1 ;// We initiate is value to one
@@ -23,16 +23,62 @@ public class FTPServer{
 
 
     try{
-      ServerSocket serverSocket = new ServerSocket(2106);// Port number a changer
-      serverSocket.setSoTimeout(1000000);
-      while(true){
-        Socket managementSocket = serverSocket.accept();
-        managementSocket.setSoTimeout(728242);
+      ServerSocket commandSocket = new ServerSocket(2106);// mis ici car c'est le port par défaut
+      commandSocket.setSoTimeout(1000000);
 
-        Management newconnection = new Management(managementSocket/*,maxThread*/);
+
+
+      while(true){
+        ServerSocket dataSocket = new ServerSocket(2006); // ce socket par contre va etre changer si PASV
+        dataSocket.setSoTimeout(1000000);
+        // initiation des commandes du socket gérant les comandes
+        Socket managementCommandSocket = commandSocket.accept();
+        managementCommandSocket.setSoTimeout(728242);
+        InputStream inCommandStream = managementCommandSocket.getInputStream();
+        OutputStream outCommandStream = managementCommandSocket.getOutputStream();
+        BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
+        PrintWriter outputCommand = new PrintWriter(outCommandStream);
+        String inCommandString = inputCommand.readLine();
+        System.out.println(managementCommandSocket.getPort());
+
+        // initiation des commandes du socket gérant les data
+        Socket managementDataSocket = dataSocket.accept();
+        managementDataSocket.setSoTimeout(728242);
+        InputStream inDataStream = managementDataSocket.getInputStream();
+        OutputStream outDataStream = managementDataSocket.getOutputStream();
+        BufferedReader inputData = new BufferedReader(new InputStreamReader(inDataStream));
+        PrintWriter outputData = new PrintWriter(outDataStream);
+        String inDataString = inputData.readLine();
+        System.out.println(managementDataSocket.getPort());
+
+
+        int isconnected = 0;
+        while(isconnected == 0){
+          if(inCommandString == "PASV\r\n"){
+            // appeler le truc passif
+            Passive pass = new Passive();
+            isconnected =  pass.connetPASV(managementCommandSocket, managementDataSocket, inComandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
+            //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
+          }else if(inCommandString == null || inCommandString.length()<0){
+            System.out.println("Mauvaise Réception du message dans le InputStream");
+            //attention il faut faire un truc en plus pour gérer ce cas mais pas tout de suite
+
+          }else{
+            // appeler le truc actifs
+            Active act = new Active();
+            isconnected = act.connetACTV(managementCommandSocket, managementDataSocket, inCommandString);//idem que ligne (cette ligne)-3;
+          }
+
+        }
+
+
+
+
+
+        Management newconnection = new Management(managementCommandSocket/*,maxThread*/);// pas sur duqeul il faut envoyer
         System.out.println("New connection incoming");
         newconnection.start();
-        //newconnection.start();
+
       }
     }catch(IOException e){
       System.out.println(e.getMessage());

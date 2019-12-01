@@ -29,13 +29,6 @@ public class Passive{
       // vérifier quel port number il faut envoyer
       String message = new String("227 Entering Passive Mode("+host+",122,8)\r\n");
       outStream.write(message.getBytes());
-      int port = 122*256+8; // a changer avec le port number que l'on utilise
-
-
-      System.out.println(connection.getPort());
-      ServerSocket newsocket = new ServerSocket(port);
-      connection  = newsocket.accept();
-      System.out.println(connection.getPort());
 
 
       while(true){

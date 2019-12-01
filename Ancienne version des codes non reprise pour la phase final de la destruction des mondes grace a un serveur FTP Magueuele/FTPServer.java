@@ -25,42 +25,9 @@ public class FTPServer{
     try{
       ServerSocket serverSocket = new ServerSocket(2106);// Port number a changer
       serverSocket.setSoTimeout(1000000);
-
-
-
       while(true){
         Socket managementSocket = serverSocket.accept();
         managementSocket.setSoTimeout(728242);
-        InputStream inStream = managementSocket.getInputStream();
-        OutputStream outStream = managementSocket.getOutputStream();
-
-        BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-        PrintWriter output= new PrintWriter(outStream);
-        String inString = input.readLine();
-        System.out.println(managementSocket.getPort());
-
-        int isconnected = 0;
-        while(isconnected == 0){
-          if(inString == "PASV\r\n"){
-            // appeler le truc passif
-            Passive pass = new Passive();
-            isconnected =  pass.connetPASV(managementSocket, inString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
-            //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
-          }else if(inString == null || inString.length()<0){
-            System.out.println("Mauvaise Réception du message dans le InputStream");
-            //attention il faut faire un truc en plus pour gérer ce cas mais pas tout de suite
-
-          }else{
-            // appeler le truc actifs
-            Active act = new Active();
-            isconnected = act.connetACTV(managementSocket, inString);//idem que ligne (cette ligne)-3;
-          }
-
-        }
-        System.out.println(managementSocket.getPort());
-
-
-
 
         Management newconnection = new Management(managementSocket/*,maxThread*/);
         System.out.println("New connection incoming");
