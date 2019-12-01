@@ -44,12 +44,12 @@ public class FTPServer{
         // initiation des commandes du socket gérant les data
         Socket managementDataSocket = dataSocket.accept();
         managementDataSocket.setSoTimeout(728242);
-        InputStream inDataStream = managementDataSocket.getInputStream();
+        /*InputStream inDataStream = managementDataSocket.getInputStream();
         OutputStream outDataStream = managementDataSocket.getOutputStream();
         BufferedReader inputData = new BufferedReader(new InputStreamReader(inDataStream));
         PrintWriter outputData = new PrintWriter(outDataStream);
         String inDataString = inputData.readLine();
-        System.out.println(managementDataSocket.getPort());
+        System.out.println(managementDataSocket.getPort());*///pas sur que c'est utile de mettre tout ca
 
 
         int isconnected = 0;
@@ -57,7 +57,7 @@ public class FTPServer{
           if(inCommandString == "PASV\r\n"){
             // appeler le truc passif
             Passive pass = new Passive();
-            isconnected =  pass.connetPASV(managementCommandSocket, managementDataSocket, inComandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
+            isconnected =  pass.connetPASV(managementCommandSocket, managementDataSocket, inCommandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
             //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
           }else if(inCommandString == null || inCommandString.length()<0){
             System.out.println("Mauvaise Réception du message dans le InputStream");

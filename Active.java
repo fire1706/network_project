@@ -25,19 +25,20 @@ public class Active{
     // Comment se connecter au port donner ? Ici le serveur ne doit pas changer de port c'est seulement le client qui change
 
     try{
-      InputStream inStream = connection.getInputStream();
-      OutputStream outStream = connection.getOutputStream();
+      OutputStream outConnectionStream = connection.getOutputStream();
+      InputStream inDataStream = data.getInputStream();
+      OutputStream outDataStream = data.getOutputStream();
 
-      outStream.write("SYN\r\n".getBytes());
-
+      outDataStream.write("SYN\r\n".getBytes());
+      String inDataString = new String();
 
       while(true){
-        BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-        inString = input.readLine(); //j'aime pas trop le fait qu'on utilise inString qui est un argument on en parle à l'occasion
+        BufferedReader input = new BufferedReader(new InputStreamReader(inDataStream));
+        inDataString = input.readLine(); //j'aime pas trop le fait qu'on utilise inString qui est un argument on en parle à l'occasion
         System.out.println("Hello man");
-        if(inString.equals("SYN,ACK")){
-          outStream.write("ACK\r\n".getBytes());
-          outStream.write("200 PORT command succesful\r\n".getBytes());
+        if(inDataString.equals("SYN,ACK")){
+          outDataStream.write("ACK\r\n".getBytes());
+          outConnectionStream.write("200 PORT command succesful\r\n".getBytes());
           System.out.println("Active Connection established with succes!");
           return 1;
         }

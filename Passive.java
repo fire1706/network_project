@@ -21,31 +21,39 @@ public class Passive{
       return 0; // pour dire que la connection a échoué
     }
     try{
-      InputStream inStream = connection.getInputStream();
-      OutputStream outStream = connection.getOutputStream();
+      OutputStream outConnectionStream = connection.getOutputStream();
       InetAddress ipAdresss = connection.getInetAddress();
       String host = ipAdresss.getHostAddress();
       host = host.replace(".",",");
       // vérifier quel port number il faut envoyer
-      String message = new String("227 Entering Passive Mode("+host+",122,8)\r\n");
-      outStream.write(message.getBytes());
-      int port = 122*256+8; // a changer avec le port number que l'on utilise
+      // on crée un port number random ( la probabilité est très très faible que l'on tombe sur un port déja utilisé)
+      Random randNumber = new Random();
+      int firstnum = randNumber.nextInt(156) +100;
+      int secondnum = randNumber.nextInt(256);
+      //Permier Message
+      String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
+      outConnectionStream.write(message.getBytes());
+      int port = firstnum*256+secondnum; // a changer avec le port number que l'on utilise
 
 
       System.out.println(connection.getPort());
       ServerSocket newsocket = new ServerSocket(port);
       data  = newsocket.accept();
       System.out.println(connection.getPort());
+      InputStream inDataStream = data.getInputStream();
+      OutputStream outDataStream = data.getOutputStream();
 
+      //BufferedReader input = new BufferedReader();
+      String inDataString = new String();
 
       while(true){
-        BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-        inString = input.readLine();
+         BufferedReader input = new BufferedReader(new InputStreamReader(inDataStream));
+        inDataString = input.readLine();
 
-        if(inString == "SYN\r\n"){
-          outStream.write("SYN,ACK\r\n".getBytes());
+        if(inDataString == "SYN\r\n"){
+          outDataStream.write("SYN,ACK\r\n".getBytes());
         }
-        else if(inString == "ACK\r\n"){
+        else if(inDataString == "ACK\r\n"){
           System.out.println("Passive Connection established with succes!");
           return 1;
         }
