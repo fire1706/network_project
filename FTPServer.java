@@ -75,7 +75,7 @@ public class FTPServer{
 
 
 
-        Management newconnection = new Management(managementCommandSocket/*,maxThread*/);// pas sur duqeul il faut envoyer
+        Management newconnection = new Management(managementCommandSocket/*, managementDataSocket,maxThread*/);// pas sur duqeul il faut envoyer
         System.out.println("New connection incoming");
         newconnection.start();
 

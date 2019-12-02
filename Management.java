@@ -10,7 +10,8 @@ public class Management extends Thread {
   exe.execute(new Runnable() {
     Integer Maxthreads*/ // revoir la partie avec le thread pool j'ai du mal a l'utiliser correctement
     Socket socketManagement;
-  Management ( Socket _s/*, Integer maxthreads*/){socketManagement=_s;/*Maxthreads = maxthreads;*/}
+    Socket socketData;
+  Management ( Socket _s/*, Socket _s2, Integer maxthreads*/){socketManagement=_s;/*, socketData=_s2,Maxthreads = maxthreads;*/}
 
       @Override
       public void run(){
@@ -24,7 +25,7 @@ public class Management extends Thread {
           PrintWriter output= new PrintWriter(outStream);
           String inString = input.readLine();
 
-          
+
           System.out.println("Client is connected");
 
           System.out.println("Let's do the authentification");
