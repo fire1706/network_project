@@ -15,38 +15,57 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 
 public class Authentification{
-  public int authented(Socket connection){
+  public int authented(Socket connection,String firstString){
     // On va crée un menu pour que la personne se connecter
     try{
       System.out.println("Please connect as anonymous if you don't have user account ! ");// in other way if you are not Sam
-      InputStream inStream = connection.getInputStream();
-      OutputStream outStream = connection.getOutputStream();
 
+      OutputStream outStream = connection.getOutputStream();
+      String inString = new String();
+
+      int i = 1;
       while(true){
-        BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-        String inString = input.readLine();
+        if(i == 1){
+            inString = firstString;
+        }else{
+  InputStream inStream = connection.getInputStream();
+System.out.println("yoda maitre tu seras");
+          BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
+System.out.println("yoda maitre tu seras");
+          inString = input.readLine();// impossible de lire ce message piour la connextion
+          
+        }
+System.out.println("ici je suis , mandalorian :"+inString);
+
+
+
 
         if(inString.startsWith("USER")){
-          if(inString.contains("Anonymous")){
+          if(inString.contains("anonymous")){
             outStream.write("230\r\n".getBytes());
             return 0; // for connection that cannot access private part
           }
           else if(inString.contains("Sam")){
             outStream.write("331\r\n".getBytes());
+System.out.println("here I am");
             // ATTENTION ne pas ré-instancier le bufferedReader sinon on perd le STREAM
-            //input = new BufferedReader(new InputStreamReader(inStream));
-            inString = input.readLine();
+            /*System.out.println(inString);
+            input = new BufferedReader(new InputStreamReader(inStream));
             System.out.println(inString);
+            inString = input.readLine();
+            System.out.println(inString);*/
             System.out.println("Checking password");
-            if(inString.contains("PASS") && inString.contains("123456")){
+          }}
+        else if(inString.contains("PASS") && inString.contains("123456")){
               outStream.write("230\r\n".getBytes());
               return 1;
-            }else{
+        }else{
               outStream.write("430\r\n".getBytes());
               System.out.println("Retry for the authentification.");
             }
-          }
-        }
+
+
+        i = i+1;
       }
 
     }catch(IOException e){

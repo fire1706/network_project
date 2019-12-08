@@ -35,6 +35,7 @@ public class Passive{
       outConnectionStream.write(message.getBytes());
       int port = firstnum*256+secondnum; // a changer avec le port number que l'on utilise
 
+System.out.println("je suis ici !");
 
       System.out.println(connection.getPort());
       ServerSocket newsocket = new ServerSocket(port);

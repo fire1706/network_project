@@ -30,9 +30,10 @@ public class Management extends Thread {
 
           System.out.println("Let's do the authentification");
 
-          Authentification authentification = new Authentification();
+          /*Authentification authentification = new Authentification();
           int typeOfConnection = authentification.authented(socketManagement); // O normal , 1 can access private folder
-          System.out.println(typeOfConnection);
+          System.out.println(typeOfConnection);*/
+          int typeOfConnection = 1;
           // Pour la suite crée un menu et répondre au demande du client avec les fonction de FileGestion
           if(typeOfConnection == 0 || typeOfConnection == 1){
             FileGestion fileGestion = new FileGestion(socketManagement, typeOfConnection);

@@ -20,29 +20,42 @@ public class FTPServer{
       System.out.println("We couldn't parse correctly the maxThreads number ! ");
     }
 
-
+System.out.println("hEEEhooooo");
 
     try{
       ServerSocket commandSocket = new ServerSocket(2106);// mis ici car c'est le port par défaut
       commandSocket.setSoTimeout(1000000);
 
-
+System.out.println("hey hey hey");
 
       while(true){
         ServerSocket dataSocket = new ServerSocket(2006); // ce socket par contre va etre changer si PASV
         dataSocket.setSoTimeout(1000000);
+System.out.println("what rheuih");
         // initiation des commandes du socket gérant les comandes
         Socket managementCommandSocket = commandSocket.accept();
+System.out.println("what re");
         managementCommandSocket.setSoTimeout(728242);
         InputStream inCommandStream = managementCommandSocket.getInputStream();
         OutputStream outCommandStream = managementCommandSocket.getOutputStream();
         BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
+System.out.println("what rhih");
         PrintWriter outputCommand = new PrintWriter(outCommandStream);
+        outCommandStream.write("220 server ready\r\n".getBytes());
         String inCommandString = inputCommand.readLine();
-        System.out.println(managementCommandSocket.getPort());
+        System.out.println(managementCommandSocket.getPort()+"ici");
+System.out.println(inCommandString);
+
+
+        Authentification authentification = new Authentification();
+        int typeOfConnection = authentification.authented(managementCommandSocket,inCommandString); // O normal , 1 can access private folder
+        System.out.println(typeOfConnection);
+
 
         // initiation des commandes du socket gérant les data
-        Socket managementDataSocket = dataSocket.accept();
+        Socket managementDataSocket = dataSocket.accept();// problème ici putaint
+        
+System.out.println("huoerbz");
         managementDataSocket.setSoTimeout(728242);
         /*InputStream inDataStream = managementDataSocket.getInputStream();
         OutputStream outDataStream = managementDataSocket.getOutputStream();
@@ -51,27 +64,31 @@ public class FTPServer{
         String inDataString = inputData.readLine();
         System.out.println(managementDataSocket.getPort());*///pas sur que c'est utile de mettre tout ca
 
+          System.out.println("Ok let's go ");
 
         int isconnected = 0;
         while(isconnected == 0){
           if(inCommandString == "PASV\r\n"){
             // appeler le truc passif
+            System.out.println("passive");
             Passive pass = new Passive();
             isconnected =  pass.connetPASV(managementCommandSocket, managementDataSocket, inCommandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
             //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
           }else if(inCommandString == null || inCommandString.length()<0){
             System.out.println("Mauvaise Réception du message dans le InputStream");
+            outCommandStream.write("120\r\n".getBytes());
             //attention il faut faire un truc en plus pour gérer ce cas mais pas tout de suite
 
           }else{
             // appeler le truc actifs
+            System.out.println("active");
             Active act = new Active();
             isconnected = act.connetACTV(managementCommandSocket, managementDataSocket, inCommandString);//idem que ligne (cette ligne)-3;
           }
 
         }
 
-
+System.out.println("fini ");
 
 
 
