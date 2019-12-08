@@ -20,43 +20,41 @@ public class FTPServer{
       System.out.println("We couldn't parse correctly the maxThreads number ! ");
     }
 
-System.out.println("hEEEhooooo");
+
 
     try{
       ServerSocket commandSocket = new ServerSocket(2106);// mis ici car c'est le port par défaut
       commandSocket.setSoTimeout(1000000);
 
-System.out.println("hey hey hey");
+
 
       while(true){
-        ServerSocket dataSocket = new ServerSocket(2006); // ce socket par contre va etre changer si PASV
-        dataSocket.setSoTimeout(1000000);
-System.out.println("what rheuih");
+        //ServerSocket dataSocket = new ServerSocket(2006); // ce socket par contre va etre changer si PASV
+        //dataSocket.setSoTimeout(1000000);
+
         // initiation des commandes du socket gérant les comandes
         Socket managementCommandSocket = commandSocket.accept();
-System.out.println("what re");
+
         managementCommandSocket.setSoTimeout(728242);
-        InputStream inCommandStream = managementCommandSocket.getInputStream();
+        //InputStream inCommandStream = managementCommandSocket.getInputStream();
         OutputStream outCommandStream = managementCommandSocket.getOutputStream();
-        BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
-System.out.println("what rhih");
-        PrintWriter outputCommand = new PrintWriter(outCommandStream);
+        //BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
+
+        //PrintWriter outputCommand = new PrintWriter(outCommandStream);
         outCommandStream.write("220 server ready\r\n".getBytes());
-        String inCommandString = inputCommand.readLine();
+        //String inCommandString = inputCommand.readLine();
         System.out.println(managementCommandSocket.getPort()+"ici");
-System.out.println(inCommandString);
+//System.out.println(inCommandString);
 
 
-        Authentification authentification = new Authentification();
-        int typeOfConnection = authentification.authented(managementCommandSocket,inCommandString); // O normal , 1 can access private folder
-        System.out.println(typeOfConnection);
+
 
 
         // initiation des commandes du socket gérant les data
-        Socket managementDataSocket = dataSocket.accept();// problème ici putaint
-        
-System.out.println("huoerbz");
-        managementDataSocket.setSoTimeout(728242);
+      //  Socket managementDataSocket = dataSocket.accept();// problème ici putaint
+
+
+      //  managementDataSocket.setSoTimeout(728242);
         /*InputStream inDataStream = managementDataSocket.getInputStream();
         OutputStream outDataStream = managementDataSocket.getOutputStream();
         BufferedReader inputData = new BufferedReader(new InputStreamReader(inDataStream));
@@ -66,7 +64,7 @@ System.out.println("huoerbz");
 
           System.out.println("Ok let's go ");
 
-        int isconnected = 0;
+/*        int isconnected = 0;
         while(isconnected == 0){
           if(inCommandString == "PASV\r\n"){
             // appeler le truc passif
@@ -86,9 +84,9 @@ System.out.println("huoerbz");
             isconnected = act.connetACTV(managementCommandSocket, managementDataSocket, inCommandString);//idem que ligne (cette ligne)-3;
           }
 
-        }
+        }*/
 
-System.out.println("fini ");
+
 
 
 

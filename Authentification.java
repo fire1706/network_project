@@ -19,21 +19,21 @@ public class Authentification{
     // On va crée un menu pour que la personne se connecter
     try{
       System.out.println("Please connect as anonymous if you don't have user account ! ");// in other way if you are not Sam
-
+      InputStream inStream = connection.getInputStream();
       OutputStream outStream = connection.getOutputStream();
       String inString = new String();
 
       int i = 1;
+      BufferedReader input = new BufferedReader(new InputStreamReader(inStream
       while(true){
         if(i == 1){
             inString = firstString;
         }else{
-  InputStream inStream = connection.getInputStream();
+
 System.out.println("yoda maitre tu seras");
-          BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-System.out.println("yoda maitre tu seras");
+          System.out.println("yoda maitre tu seras");
           inString = input.readLine();// impossible de lire ce message piour la connextion
-          
+
         }
 System.out.println("ici je suis , mandalorian :"+inString);
 
@@ -66,7 +66,7 @@ System.out.println("here I am");
 
 
         i = i+1;
-      }
+      }));
 
     }catch(IOException e){
       System.out.println(e.getMessage());
