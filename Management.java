@@ -17,7 +17,7 @@ public class Management extends Thread {
       public void run(){
         try{
           System.out.println("Let's start the game !");
-
+ 
 
           //-------------------------Connection du port 21xx-----------------------------------
           InputStream inCommandStream = socketManagement.getInputStream();

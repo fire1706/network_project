@@ -24,20 +24,25 @@ public class Authentification{
       String inString = new String();
 
       int i = 1;
-      BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
+
       while(true){
       /*  if(i == 1){
             inString = firstString;
         }else{*/
-
-System.out.println("yoda maitre tu seras");
-  while ((inString = input.readLine()) != null) {
+        String b1 = String.valueOf(connection.isConnected());
+        String b2 = String.valueOf(connection.isInputShutdown());
+        System.out.println("\n\r"+b1+" hey  hey "+b2);
+//System.out.println("yoda maitre tu seras");
+      BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
+            inString = input.readLine();
 
           //inString = input.readLine();// impossible de lire ce message piour la connextion
 
       //  }
 System.out.println("ici je suis , mandalorian :"+inString);
-
+ b1 = String.valueOf(connection.isConnected());
+ b2 = String.valueOf(connection.isInputShutdown());
+System.out.println("\n\r"+b1+" hey and hey "+b2);
 
 
 
@@ -67,7 +72,8 @@ System.out.println("here I am");
 
 
         i = i+1;
-      }}
+      }
+
 
     }catch(IOException e){
       System.out.println(e.getMessage());
