@@ -15,7 +15,7 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 
 public class Authentification{
-  public int authented(Socket connection,String firstString){
+  public int authented(Socket connection/*,String firstString*/){
     // On va crée un menu pour que la personne se connecter
     try{
       System.out.println("Please connect as anonymous if you don't have user account ! ");// in other way if you are not Sam
@@ -24,17 +24,18 @@ public class Authentification{
       String inString = new String();
 
       int i = 1;
-      BufferedReader input = new BufferedReader(new InputStreamReader(inStream
+      BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
       while(true){
-        if(i == 1){
+      /*  if(i == 1){
             inString = firstString;
-        }else{
+        }else{*/
 
 System.out.println("yoda maitre tu seras");
-          System.out.println("yoda maitre tu seras");
-          inString = input.readLine();// impossible de lire ce message piour la connextion
+  while ((inString = input.readLine()) != null) {
 
-        }
+          //inString = input.readLine();// impossible de lire ce message piour la connextion
+
+      //  }
 System.out.println("ici je suis , mandalorian :"+inString);
 
 
@@ -66,7 +67,7 @@ System.out.println("here I am");
 
 
         i = i+1;
-      }));
+      }}
 
     }catch(IOException e){
       System.out.println(e.getMessage());

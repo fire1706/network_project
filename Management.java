@@ -22,10 +22,10 @@ public class Management extends Thread {
           //-------------------------Connection du port 21xx-----------------------------------
           InputStream inCommandStream = socketManagement.getInputStream();
           OutputStream outCommandStream = socketManagement.getOutputStream();
-
+/*
           BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
           PrintWriter outputCommand= new PrintWriter(outCommandStream);
-          String inCommandString = inputCommand.readLine();
+          String inCommandString = inputCommand.readLine();*/
           //-----------------------------------------------------------------------------------
 
 
@@ -33,7 +33,7 @@ public class Management extends Thread {
               System.out.println("Let's do the authentification");
 
           Authentification authentification = new Authentification();
-          int typeOfConnection = authentification.authented(socketManagement,inCommandString); // O normal , 1 can access private folder
+          int typeOfConnection = authentification.authented(socketManagement/*,inCommandString*/); // O normal , 1 can access private folder
           System.out.println(typeOfConnection);
           //------------------------------------------------------------------------------------
 
@@ -47,11 +47,11 @@ public class Management extends Thread {
           //-----------------------------------------------------------------------------------
 
 
-            inCommandString = inputCommand.readLine();
+            //inCommandString = inputCommand.readLine();
 
           //---------------------------Connection-----------------------------------------------
           System.out.println("Client is connected");
-
+/*
           int isconnected = 0;
           while(isconnected == 0){
             if(inCommandString == "PASV\r\n"){
@@ -68,7 +68,7 @@ public class Management extends Thread {
               Active act = new Active();
               isconnected = act.connetACTV(socketManagement,socketData, inCommandString);//idem que ligne (cette ligne)-3;
             }
-          }
+          }*/
           //------------------------------------------------------------------------------------
 
 
