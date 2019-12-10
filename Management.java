@@ -48,6 +48,23 @@ public class Management extends Thread {
 
 
             String inCommandString = inputCommand.readLine();
+            if( inCommandString != null){
+              while(true){
+                System.out.println(inCommandString);
+                if( inCommandString.contains("SYST")){
+                  outCommandStream.write("215 this server run on java\r\n".getBytes());
+                  inCommandString = inputCommand.readLine();
+                }else if( inCommandString.contains("FEAT")){
+                  outCommandStream.write("211 to do \r\n".getBytes());// a étofer il faut mettre les command possible
+                  inCommandString = inputCommand.readLine();
+                }else if( inCommandString.contains("PWD")){
+                  outCommandStream.write("257 dire le directory ici\r\n".getBytes());
+                  inCommandString = inputCommand.readLine();
+                }else{
+                  break;
+                }
+              }
+            }
 
           //---------------------------Connection-----------------------------------------------
           System.out.println("Client is connected");
