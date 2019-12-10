@@ -39,7 +39,7 @@ BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
         System.out.println("\n\r"+b1+" hey  hey "+b2);
 //System.out.println("yoda maitre tu seras");
 
-        inString = input.readLine();
+        while( (inString = input.readLine()) == null){}
 
           //inString = input.readLine();// impossible de lire ce message piour la connextion
 
@@ -53,12 +53,12 @@ System.out.println("\n\r"+b1+" hey and hey "+b2);
 
         if(inString.startsWith("USER")){
           if(inString.contains("anonymous")){
-            outStream.write("230\r\n".getBytes());
+            outStream.write("230 you are connected\r\n".getBytes());
             return 0; // for connection that cannot access private part
           }
           else if(inString.contains("Sam")){
-            outStream.write("331\r\n".getBytes());
-System.out.println("here I am");
+            outStream.write("331 waiting for password\r\n".getBytes());
+
             // ATTENTION ne pas ré-instancier le bufferedReader sinon on perd le STREAM
             /*System.out.println(inString);
             input = new BufferedReader(new InputStreamReader(inStream));
@@ -69,7 +69,7 @@ System.out.println("here I am");
           }}
           // check password
         else if(inString.startsWith("PASS") && inString.contains("123456")){
-              outStream.write("230\r\n".getBytes());
+              outStream.write("230 you are connected\r\n".getBytes());
               return 1;
         }else{
               outStream.write("430\r\n".getBytes());
