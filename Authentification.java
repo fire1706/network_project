@@ -15,7 +15,12 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 
 public class Authentification{
-  public int authented(Socket connection/*,String firstString*/){
+  Socket connection = new Socket();
+
+  public Authentification(Socket connection){
+    this.connection = connection;
+  }
+  public int authented(/*Socket connection/*,String firstString*/){
     // On va crée un menu pour que la personne se connecter
     try{
       System.out.println("Please connect as anonymous if you don't have user account ! ");// in other way if you are not Sam
@@ -24,7 +29,7 @@ public class Authentification{
       String inString = new String();
 
       int i = 1;
-
+BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
       while(true){
       /*  if(i == 1){
             inString = firstString;
@@ -33,8 +38,8 @@ public class Authentification{
         String b2 = String.valueOf(connection.isInputShutdown());
         System.out.println("\n\r"+b1+" hey  hey "+b2);
 //System.out.println("yoda maitre tu seras");
-      BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-            inString = input.readLine();
+
+        inString = input.readLine();
 
           //inString = input.readLine();// impossible de lire ce message piour la connextion
 
@@ -62,7 +67,8 @@ System.out.println("here I am");
             System.out.println(inString);*/
             System.out.println("Checking password");
           }}
-        else if(inString.contains("PASS") && inString.contains("123456")){
+          // check password
+        else if(inString.startsWith("PASS") && inString.contains("123456")){
               outStream.write("230\r\n".getBytes());
               return 1;
         }else{
@@ -70,8 +76,6 @@ System.out.println("here I am");
               System.out.println("Retry for the authentification.");
             }
 
-
-        i = i+1;
       }
 
 

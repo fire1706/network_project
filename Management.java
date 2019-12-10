@@ -17,14 +17,14 @@ public class Management extends Thread {
       public void run(){
         try{
           System.out.println("Let's start the game !");
- 
+
 
           //-------------------------Connection du port 21xx-----------------------------------
           InputStream inCommandStream = socketManagement.getInputStream();
           OutputStream outCommandStream = socketManagement.getOutputStream();
-/*
+
           BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
-          PrintWriter outputCommand= new PrintWriter(outCommandStream);
+          /*PrintWriter outputCommand= new PrintWriter(outCommandStream);
           String inCommandString = inputCommand.readLine();*/
           //-----------------------------------------------------------------------------------
 
@@ -32,32 +32,32 @@ public class Management extends Thread {
           //--------------------------Authentification------------------------------------------
               System.out.println("Let's do the authentification");
 
-          Authentification authentification = new Authentification();
-          int typeOfConnection = authentification.authented(socketManagement/*,inCommandString*/); // O normal , 1 can access private folder
+          Authentification authentification = new Authentification(socketManagement);
+          int typeOfConnection = authentification.authented(/*ÒÒsocketManagement/*,inCommandString*/); // O normal , 1 can access private folder
           System.out.println(typeOfConnection);
           //------------------------------------------------------------------------------------
 
 
           //-------------------------Connection du port 20xx-----------------------------------
-          ServerSocket dataSocket = new ServerSocket(2006); // ce socket par contre va etre changer si PASV
+          /*ServerSocket dataSocket = new ServerSocket(2006); // ce socket par contre va etre changer si PASV
           dataSocket.setSoTimeout(1000000);
 
           Socket socketData = dataSocket.accept();// problème ici a régler
-          socketData.setSoTimeout(728242);
+          socketData.setSoTimeout(728242);*/
           //-----------------------------------------------------------------------------------
 
 
-            //inCommandString = inputCommand.readLine();
+            String inCommandString = inputCommand.readLine();
 
           //---------------------------Connection-----------------------------------------------
           System.out.println("Client is connected");
-/*
+
           int isconnected = 0;
           while(isconnected == 0){
             if(inCommandString == "PASV\r\n"){
               // appeler le truc passif
               Passive pass = new Passive();
-              isconnected =  pass.connetPASV(socketManagement,socketData, inCommandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
+              isconnected =  pass.connetPASV(socketManagement/*,socketData*/, inCommandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
               //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
             }else if(inCommandString == null || inCommandString.length()<0){
               System.out.println("Mauvaise Réception du message dans le InputStream");
@@ -65,10 +65,10 @@ public class Management extends Thread {
 
             }else{
               // appeler le truc actif
-              Active act = new Active();
-              isconnected = act.connetACTV(socketManagement,socketData, inCommandString);//idem que ligne (cette ligne)-3;
+              //Active act = new Active();
+              //isconnected = act.connetACTV(socketManagement/*,socketData*/, inCommandString);//idem que ligne (cette ligne)-3;
             }
-          }*/
+          }
           //------------------------------------------------------------------------------------
 
 

@@ -15,13 +15,22 @@ import javax.imageio.ImageIO;
 //    --------------
 
 public class Passive{
-  public int connetPASV(Socket connection, Socket data, String inString){
-    // On vérifie que la demande est bien pour un connection passive
-    if(!(inString == "PASV\r\n")){
-      return 0; // pour dire que la connection a échoué
-    }
+  public int connetPASV(Socket connection/*, Socket data*/, String inString){
+
     try{
       OutputStream outConnectionStream = connection.getOutputStream();
+      //InputStream inConnectionStream = connection.getInputStream();
+      //BufferedReader inputConnection = new BufferedReader(new InputStreamReader(inConnectionStream));
+      //String inString = inputConnection.readLine();
+
+      // On vérifie que la demande est bien pour un connection passive
+      if(!(inString == "PASV\r\n")){
+        return 0; // pour dire que la connection a échoué
+      }
+
+
+
+
       InetAddress ipAdresss = connection.getInetAddress();
       String host = ipAdresss.getHostAddress();
       host = host.replace(".",",");
@@ -39,7 +48,7 @@ System.out.println("je suis ici !");
 
       System.out.println(connection.getPort());
       ServerSocket newsocket = new ServerSocket(port);
-      data  = newsocket.accept();
+      Socket data  = newsocket.accept();
       System.out.println(connection.getPort());
       InputStream inDataStream = data.getInputStream();
       OutputStream outDataStream = data.getOutputStream();
