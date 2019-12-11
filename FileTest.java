@@ -4,13 +4,9 @@ import java.io.*;
 import javax.imageio.ImageIO;
 
 public class FileTest{
-	File file = new File("/");
-	File privateFile = new File("/","private");
-	File mytext = new File("/", "mytext.txt");
-	File myImage = new File("/", "myimage.bmp");
-	File secret = new File("/private", "secret.txt");
+    String secret = "UPUPDOWNDOWNLEFTRIGHTLEFTRIGHTBASTART";
+    String mytext = "Irasshaimase";
 	
-
 	byte[] myImg = {66,  77,  70,  1,  0,  0,    0,   0,   0,   0,  62,   0,   0,  0,   40,   0,
                          0,   0,  34,  0,  0,  0,   33,   0,   0,   0,   1,   0,   1,  0,    0,   0,
                          0,   0,   8,  1,  0,  0,    0,   0,   0,   0,   0,   0,   0,  0,    0,   0,
@@ -37,27 +33,10 @@ public class FileTest{
 
         FileTest(){
 
-
         }
 
         public void getPathname(){
-        	//secret.createNewFile();
-        	try{
-        		
-        		secret.createNewFile();
-        	}
-        	catch(IOException e){
-        		e.printStackTrace();
-        	}catch(SecurityException e){
-        		e.printStackTrace();
-        	}
         	
-        	System.out.println(file.toString());
-
-        	System.out.println(myImage.toString());
-
-        	System.out.println(secret.isDirectory());
-        	System.out.println(secret.isFile());
         }
 
 
