@@ -1,6 +1,10 @@
 import java.util.*;
 import java.lang.*;
 import java.io.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.net.*;
 import java.awt.*;
 import javax.imageio.ImageIO;
@@ -23,28 +27,24 @@ public class FTPServer{
 
 
     try{
-      ServerSocket commandSocket = new ServerSocket(2106);// mis ici car c'est le port par défaut
+      ServerSocket commandSocket = new ServerSocket(2106);
       commandSocket.setSoTimeout(1000000);
 
 
 
       while(true){
-        //ServerSocket dataSocket = new ServerSocket(2006); // ce socket par contre va etre changer si PASV
-        //dataSocket.setSoTimeout(1000000);
+
 
         // initiation des commandes du socket gérant les comandes
         Socket managementCommandSocket = commandSocket.accept();
-
         managementCommandSocket.setSoTimeout(728242);
-        //InputStream inCommandStream = managementCommandSocket.getInputStream();
-        OutputStream outCommandStream = managementCommandSocket.getOutputStream();
-        //BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
 
-        //PrintWriter outputCommand = new PrintWriter(outCommandStream);
+
+        OutputStream outCommandStream = managementCommandSocket.getOutputStream();
+        // On défini que le serveur est près a recevoir
         outCommandStream.write("220 server ready\r\n".getBytes());
-        //String inCommandString = inputCommand.readLine();
-        System.out.println(managementCommandSocket.getPort()+"ici");
-//System.out.println(inCommandString);
+
+
 
 
 
@@ -88,11 +88,11 @@ public class FTPServer{
 
 
 
+        ExecutorService exe = Executors.newFixedThreadPool(maxThread);
 
-
-        Management newconnection = new Management(managementCommandSocket/*, managementDataSocket,maxThread*/);// pas sur duqeul il faut envoyer
+        //Management newconnection = new Management(managementCommandSocket);// pas sur duqeul il faut envoyer
         System.out.println("New connection incoming");
-        newconnection.start();
+        exe.execute(new Management(managementCommandSocket)/*new Handler(newconnection.start())*/);
 
       }
     }catch(IOException e){

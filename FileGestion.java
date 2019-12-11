@@ -46,7 +46,8 @@ public class FileGestion{
 					outStream.write("257 /\r\n".getBytes());
 				}
 				else if(inString.contains("LIST")){
-					outStream.write("110 private mytext.txt myimage.bmo\r\n".getBytes());
+					System.out.println("ici");
+					outStream.write("110 private mytext.txt myimage.bmo\r\n".getBytes());// ici je pense pas que se sois la commande 110 vic
 				}
 				else if(inString.contains("SYST")){
 					Properties prop = new Properties();
@@ -54,7 +55,7 @@ public class FileGestion{
 					str = prop.getProperty("os.arch");
 					outStream.write("215 \r\n".getBytes());
 				}
-				else if(inString.contians("HELP")){
+				else if(inString.contains("HELP")){
 
 				}
 
