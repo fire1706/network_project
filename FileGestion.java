@@ -1,6 +1,6 @@
 // grosse fonction comprenant tout les fonctins de gestion des fichiers
-// Downlmoads
-// Uploads
+// Downlmoads (RETR)
+// Uploads (STOR)
 // SYST
 // FEAT
 // MDTM
@@ -18,6 +18,7 @@
 
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class FileGestion{
 	int authorized = -1;
@@ -28,6 +29,7 @@ public class FileGestion{
 	}
 
 	public void menu(){
+		String str = new String();
 		try{
 			System.out.println("Welcome in the menu:");
 			System.out.println("Send HELP if you need some help.");
@@ -36,7 +38,31 @@ public class FileGestion{
           	OutputStream outStream = socketClient.getOutputStream();
 
           	BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-          	String inString = input.readLine();
+          	String inString = new String();
+          	while(true){
+				inString = input.readLine();
+
+				if(inString == "PWD"){
+					outStream.write("257 /\r\n".getBytes());
+				}
+				else if(inString == "LIST"){
+					outStream.write("110 private mytext.txt myimage.bmo\r\n".getBytes());
+				}
+				else if(inString == "SYST"){
+					Properties prop = new Properties();
+					prop = System.getProperties();
+					str = prop.getProperty("os.arch");
+					outStream.write("215 \r\n".getBytes());
+				}
+				else if(inString == "HELP"){
+					
+				}
+
+          		
+
+          	}
+          	
+
 		}catch(UnknownHostException e){
 			e.printStackTrace();
 		}catch(IOException e){
