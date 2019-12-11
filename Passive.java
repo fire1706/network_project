@@ -21,6 +21,7 @@ public class Passive{
       OutputStream outConnectionStream = connection.getOutputStream();
       InputStream inConnectionStream = connection.getInputStream();
       BufferedReader inputConnection = new BufferedReader(new InputStreamReader(inConnectionStream));
+      Socket data = new Socket();
       //String inString = inputConnection.readLine();
 
       // On vérifie que la demande est bien pour un connection passive
@@ -42,48 +43,53 @@ System.out.println(host);
       int firstnum = randNumber.nextInt(156) +100;
       int secondnum = randNumber.nextInt(256);
       //Permier Message
-      if(inString.contains("PASV")){
+      if(inString.startsWith("PASV")){
         String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         outConnectionStream.write(message.getBytes());
       }
-      if(inString.contains("EPSV")){
+      if(inString.startsWith("EPSV")){
         String message = new String("229 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         outConnectionStream.write(message.getBytes());
       }
       int port = firstnum*256+secondnum; // a changer avec le port number que l'on utilise
       inString = inputConnection.readLine();
       if(inString.contains("EPRT")){
-        System.out.println(inString);
+        outConnectionStream.write("200 \r\n".getBytes());
+        return 1;
+      /*  System.out.println(inString);
         int n2 = inString.length() - 7 ;
         String getAddr = inString.substring(8,n2);
         System.out.println(getAddr);
-
-        //outConnectionStream.write("200 \r\n".getBytes());
+        data = new Socket(getAddr,1025,hostI,port);*/
       }
 
 
+/*
       System.out.println(connection.getPort());
       ServerSocket newsocket = new ServerSocket(port);
-      Socket data  = newsocket.accept();
+      Socket data  = newsocket.accept();*/
       System.out.println(connection.getPort());
       InputStream inDataStream = data.getInputStream();
       OutputStream outDataStream = data.getOutputStream();
 
       //BufferedReader input = new BufferedReader();
       String inDataString = new String();
-
+System.out.println(" ici ");
       while(true){
          BufferedReader input = new BufferedReader(new InputStreamReader(inDataStream));
-        inDataString = input.readLine();
-
-        if(inDataString == "SYN\r\n"){
+        while((inDataString = input.readLine())==null){}
+System.out.println(" ici ");
+        if(inDataString.contains("SYN")){
+System.out.println(" ici ");
           outDataStream.write("SYN,ACK \r\n".getBytes());
         }
-        else if(inDataString == "ACK\r\n"){
+        else if(inDataString.contains("ACK")){
           System.out.println("Passive Connection established with succes!");
+          outConnectionStream.write("200 \r\n".getBytes());
           return 1;
         }
       }
+
     }catch(IOException e){
       System.out.println(e.getMessage());
     }

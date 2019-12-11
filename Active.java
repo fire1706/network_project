@@ -23,15 +23,28 @@ public class Active{
       return 0; // pour dire que la connection a échoué
     }
     // Comment se connecter au port donner ? Ici le serveur ne doit pas changer de port c'est seulement le client qui change
-    
+int port = 0;
+String getAddr = null;
 
 
     try{
       OutputStream outConnectionStream = connection.getOutputStream();
+      if(inString.contains("EPRT")){
+        //outConnectionStream.write("200 \r\n".getBytes());
+        System.out.println(inString);
+        int n2 = inString.length() - 7 ;
+        int n4 = n2+1;
+        int n3 = inString.length() - 1 ;
+        getAddr = inString.substring(8,n2);
+        System.out.println(getAddr);
+        port = Integer.parseInt(inString.substring(n4,n3));
+      }
+
+      Socket data = new Socket(getAddr,port);
       InputStream inDataStream = data.getInputStream();
       OutputStream outDataStream = data.getOutputStream();
-
-      outDataStream.write("SYN\r\n".getBytes());
+System.out.println("je suis la bande de connard jehehfhejf");
+      outDataStream.write("SYN \r\n".getBytes());
       String inDataString = new String();
 
       while(true){
@@ -39,7 +52,7 @@ public class Active{
         inDataString = input.readLine(); //j'aime pas trop le fait qu'on utilise inString qui est un argument on en parle à l'occasion
         System.out.println("Hello man");
         if(inDataString.equals("SYN,ACK")){
-          outDataStream.write("ACK\r\n".getBytes());
+          outDataStream.write("ACK \r\n".getBytes());
           outConnectionStream.write("200 PORT command succesful\r\n".getBytes());
           System.out.println("Active Connection established with succes!");
           return 1;

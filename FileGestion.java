@@ -42,33 +42,33 @@ public class FileGestion{
           	while(true){
 				inString = input.readLine();
 
-				if(inString == "PWD"){
+				if(inString.contains("PWD")){
 					outStream.write("257 /\r\n".getBytes());
 				}
-				else if(inString == "LIST"){
+				else if(inString.contains("LIST")){
 					outStream.write("110 private mytext.txt myimage.bmo\r\n".getBytes());
 				}
-				else if(inString == "SYST"){
+				else if(inString.contains("SYST")){
 					Properties prop = new Properties();
 					prop = System.getProperties();
 					str = prop.getProperty("os.arch");
 					outStream.write("215 \r\n".getBytes());
 				}
-				else if(inString == "HELP"){
-					
+				else if(inString.contians("HELP")){
+
 				}
 
-          		
+
 
           	}
-          	
+
 
 		}catch(UnknownHostException e){
 			e.printStackTrace();
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		
+
 
 
 	}

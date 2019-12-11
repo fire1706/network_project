@@ -79,7 +79,7 @@ public class Management extends Thread {
             }
 
           //---------------------------Connection-----------------------------------------------
-          System.out.println("Client is connected");
+
 
           int isconnected = 0;
           while(isconnected == 0){
@@ -99,6 +99,7 @@ public class Management extends Thread {
               isconnected = act.connetACTV(socketManagement/*,socketData*/, inCommandString);//idem que ligne (cette ligne)-3;
             }
           }
+          System.out.println("Client is connected");
           //------------------------------------------------------------------------------------
 
 
