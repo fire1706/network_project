@@ -11,7 +11,8 @@ import javax.imageio.ImageIO;
 
 
 // Attention que j'ai pas gérer le fais que les truc s'envoie dans le outputstream ou alors des truc se recoivent !
-// Parce que je pensais que on allait gérer ca allieurs et ceci se sont juste des petit fonction a appeler pour aider et pas avoir un code surchager maintneant je peux faire en sorte que ca gère les outstream et tout et tout
+// Parce que je pensais que on allait gérer ca allieurs et ceci se sont juste des petit fonction a appeler pour aider 
+//et pas avoir un code surchager maintneant je peux faire en sorte que ca gère les outstream et tout et tout
 public class listeFonctionFlieParThomas{
 
 public void CDUP(){
