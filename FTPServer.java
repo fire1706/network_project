@@ -23,7 +23,7 @@ public class FTPServer{
     }catch(NumberFormatException e){
       System.out.println("We couldn't parse correctly the maxThreads number ! ");
     }
-
+    ExecutorService exe = Executors.newFixedThreadPool(maxThread);
 
 
     try{
@@ -88,11 +88,11 @@ public class FTPServer{
 
 
 
-        ExecutorService exe = Executors.newFixedThreadPool(maxThread);
+
 
         //Management newconnection = new Management(managementCommandSocket);// pas sur duqeul il faut envoyer
         System.out.println("New connection incoming");
-        exe.execute(new Management(managementCommandSocket)/*new Handler(newconnection.start())*/);
+        exe.execute(new Management(managementCommandSocket));
 
       }
     }catch(IOException e){
