@@ -23,6 +23,8 @@ public class Active{
       return 0; // pour dire que la connection a échoué
     }
     // Comment se connecter au port donner ? Ici le serveur ne doit pas changer de port c'est seulement le client qui change
+    
+
 
     try{
       OutputStream outConnectionStream = connection.getOutputStream();

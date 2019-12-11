@@ -52,13 +52,25 @@ public class Management extends Thread {
               while(true){
                 System.out.println(inCommandString);
                 if( inCommandString.contains("SYST")){
-                  outCommandStream.write("215 this server run on java\r\n".getBytes());
+                  Properties prop = new Properties();
+                  prop = System.getProperties();
+                  String str = prop.getProperty("os.arch");
+                  inCommandString = "215 "+str+"\r\n";
+                  outCommandStream.write(inCommandString.getBytes());
                   inCommandString = inputCommand.readLine();
                 }else if( inCommandString.contains("FEAT")){
                   outCommandStream.write("211 to do \r\n".getBytes());// a étofer il faut mettre les command possible
                   inCommandString = inputCommand.readLine();
                 }else if( inCommandString.contains("PWD")){
-                  outCommandStream.write("257 dire le directory ici\r\n".getBytes());
+                  outCommandStream.write("257 /\r\n".getBytes());
+                  inCommandString = inputCommand.readLine();
+                }else if( inCommandString.contains("TYPE")){
+                  if(inCommandString.contains("I")){
+                    outCommandStream.write("200 Type set to I\r\n".getBytes());
+                  }
+                  if(inCommandString.contains("A")){
+                    outCommandStream.write("200 Type set to A\r\n".getBytes());
+                  }
                   inCommandString = inputCommand.readLine();
                 }else{
                   break;
@@ -71,8 +83,9 @@ public class Management extends Thread {
 
           int isconnected = 0;
           while(isconnected == 0){
-            if(inCommandString == "PASV\r\n"){
+            if(inCommandString.contains("PASV") || inCommandString.contains("EPSV")){
               // appeler le truc passif
+              //System.out.println("Je suis ici mon gars");
               Passive pass = new Passive();
               isconnected =  pass.connetPASV(socketManagement/*,socketData*/, inCommandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
               //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
@@ -82,8 +95,8 @@ public class Management extends Thread {
 
             }else{
               // appeler le truc actif
-              //Active act = new Active();
-              //isconnected = act.connetACTV(socketManagement/*,socketData*/, inCommandString);//idem que ligne (cette ligne)-3;
+              Active act = new Active();
+              isconnected = act.connetACTV(socketManagement/*,socketData*/, inCommandString);//idem que ligne (cette ligne)-3;
             }
           }
           //------------------------------------------------------------------------------------
