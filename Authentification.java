@@ -29,35 +29,35 @@ public class Authentification{
       String inString = new String();
 
       int i = 1;
-BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
-      while(true){
+      BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
+        while(true){
       /*  if(i == 1){
             inString = firstString;
         }else{*/
-        String b1 = String.valueOf(connection.isConnected());
-        String b2 = String.valueOf(connection.isInputShutdown());
-        System.out.println("\n\r"+b1+" hey  hey "+b2);
+          //String b1 = String.valueOf(connection.isConnected());
+          //String b2 = String.valueOf(connection.isInputShutdown());
+          //System.out.println("\n\r"+b1+" hey  hey "+b2);
 //System.out.println("yoda maitre tu seras");
 
-        while( (inString = input.readLine()) == null){}
+          while( (inString = input.readLine()) == null){}
 
           //inString = input.readLine();// impossible de lire ce message piour la connextion
 
       //  }
-System.out.println("ici je suis , mandalorian :"+inString);
- b1 = String.valueOf(connection.isConnected());
- b2 = String.valueOf(connection.isInputShutdown());
-System.out.println("\n\r"+b1+" hey and hey "+b2);
+          //System.out.println("ici je suis , mandalorian :"+inString);
+          //b1 = String.valueOf(connection.isConnected());
+          //b2 = String.valueOf(connection.isInputShutdown());
+          //System.out.println("\n\r"+b1+" hey and hey "+b2);
 
 
 
-        if(inString.startsWith("USER")){
-          if(inString.contains("anonymous")){
-            outStream.write("230 you are connected\r\n".getBytes());
-            return 0; // for connection that cannot access private part
-          }
-          else if(inString.contains("Sam")){
-            outStream.write("331 waiting for password\r\n".getBytes());
+          if(inString.startsWith("USER")){
+            if(inString.contains("anonymous")){
+              outStream.write("230 you are connected\r\n".getBytes());
+              return 0; // for connection that cannot access private part
+            }
+            else if(inString.contains("Sam")){
+              outStream.write("331 waiting for password\r\n".getBytes());
 
             // ATTENTION ne pas ré-instancier le bufferedReader sinon on perd le STREAM
             /*System.out.println(inString);
@@ -65,16 +65,17 @@ System.out.println("\n\r"+b1+" hey and hey "+b2);
             System.out.println(inString);
             inString = input.readLine();
             System.out.println(inString);*/
-            System.out.println("Checking password");
-          }}
+              System.out.println("Checking password");
+            }
+          }
           // check password
-        else if(inString.startsWith("PASS") && inString.contains("123456")){
+          else if(inString.startsWith("PASS") && inString.contains("123456")){
               outStream.write("230 you are connected\r\n".getBytes());
               return 1;
-        }else{
+          }else{
               outStream.write("430\r\n".getBytes());
               System.out.println("Retry for the authentification.");
-            }
+          }
 
       }
 
