@@ -1,11 +1,12 @@
 import java.util.*;
 
 public class FileVirtuel{
+	Node root = null;
 
 	
 	public FileVirtuel(){
 		try{
-			Node root = new Node("/", true);
+			root = new Node("/", true);
 			Node privateFolder = new Node("private", root);
 			root.addNextNode(privateFolder);
 
@@ -41,6 +42,7 @@ public class FileVirtuel{
 
 			Node myimage = new Node("myimage.bmp", myImg, root);
 			root.addNextNode(myimage);
+			
 
 			/* A ajouter si tu veux rajouter un dossier contenant un fichier dans private
 			Node folder = new Node("folder", privateFolder);
@@ -72,13 +74,14 @@ public class FileVirtuel{
 
 	}
 
-	public void afficheDirectory(Node n){
+	public String[] list(Node n){
+		String[] str = null;
 		try{
 
 
 			int size = n.getSizeContent();
 
-			String[] str = new String[size];
+			str = new String[size];
 			str = n.getDirectoryContent();
 			for(int i=0; i<size; i++){
 				System.out.println(str[i]);
@@ -86,6 +89,7 @@ public class FileVirtuel{
 		}catch(NodeException e){
 			e.printStackTrace();
 		}
+		return str;
 	}
 
 	// public static String getRepository(Node node){
