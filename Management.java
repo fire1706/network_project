@@ -11,7 +11,7 @@ public class Management extends Thread {
     Integer Maxthreads*/ // revoir la partie avec le thread pool j'ai du mal a l'utiliser correctement
     Socket socketManagement;
 
-  Management ( Socket _s/*, Socket _s2, Integer maxthreads*/){socketManagement=_s;/*, socketData=_s2,Maxthreads = maxthreads;*/}
+  Management ( Socket _s/*, Socket _s2, Integer maxthreads*/, FileVirtuel file_virtuel){socketManagement=_s;/*, socketData=_s2,Maxthreads = maxthreads;*/}
 
       @Override
       public void run(){
@@ -109,7 +109,7 @@ public class Management extends Thread {
 
           // Pour la suite crée un menu et répondre au demande du client avec les fonction de FileGestion
           if(typeOfConnection == 0 || typeOfConnection == 1){
-            FileGestion fileGestion = new FileGestion(socketManagement, typeOfConnection);
+            FileGestion fileGestion = new FileGestion(socketManagement, typeOfConnection, FileVirtuel file_virtuel);
             fileGestion.menu();
           }else{
             System.out.println("Access denied");
