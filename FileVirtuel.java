@@ -76,10 +76,10 @@ public class FileVirtuel{
 		try{
 
 
-			int size = root.getSizeContent();
+			int size = n.getSizeContent();
 
 			String[] str = new String[size];
-			str = root.getDirectoryContent();
+			str = n.getDirectoryContent();
 			for(int i=0; i<size; i++){
 				System.out.println(str[i]);
 			}
