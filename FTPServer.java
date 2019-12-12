@@ -1,3 +1,12 @@
+//---------------------------------FTPServer---------------------------------------------
+//
+// This first function goal is to launch the ftp server (in his globality).
+// It will create the virtual file asked and allow us to launch a fixed
+// number of threads when program is called.
+//
+//Copyright (c) 2019 by Thomas BASTIN & Victor Dachet. All Rights Reserved.
+//-----------------------------------------------------------------------------------------
+
 import java.util.*;
 import java.lang.*;
 import java.io.*;
@@ -8,101 +17,55 @@ import java.util.concurrent.TimeUnit;
 import java.net.*;
 import java.awt.*;
 import javax.imageio.ImageIO;
-// ICI le serveur va seulement ouvirr un nouveau thread pour chque connection
-// attetion a gérer le  nombre thread maximum cfr section 3 de l'assingment
 
 public class FTPServer{
 
-  public static void main(String[] args) throws Exception{// pas sur que on doit garder le throws exception
+  public static void main(String[] args){
 
     // Firstly we take as an argument the Maxthreadpool
     int maxThread = 1 ;// We initiate is value to one
+
+    // We effectuate this into a try and catch in the case that args cannot be parse correctly
     try{
+
       maxThread = Integer.parseInt(args[0]);
 
     }catch(NumberFormatException e){
       System.out.println("We couldn't parse correctly the maxThreads number ! ");
-    }
+    }// end try&catch
+    // We fixe the number thread pool
     ExecutorService exe = Executors.newFixedThreadPool(maxThread);
 
-    /* Instantiation fichiers virtuels */
+    // Instantiation of virtual file
     FileVirtuel file_virtuel = new FileVirtuel();
 
 
     try{
+      // We create a ServerSocket with port 21xx for the connection
       ServerSocket commandSocket = new ServerSocket(2106);
       commandSocket.setSoTimeout(1000000);
 
-
-
       while(true){
-
-
-        // initiation des commandes du socket gérant les comandes
+        // We accpet the ServerSocket
         Socket managementCommandSocket = commandSocket.accept();
-        managementCommandSocket.setSoTimeout(728242);
-
+        managementCommandSocket.setSoTimeout(728242); // timeout define to wait x second , if it is reach the Socket closed
 
         OutputStream outCommandStream = managementCommandSocket.getOutputStream();
-        // On défini que le serveur est près a recevoir
+
+        // We say that the server is ready to get command and data
+        System.out.println("Ok let's go ");
         outCommandStream.write("220 server ready\r\n".getBytes());
 
-
-
-
-
-
-
-        // initiation des commandes du socket gérant les data
-      //  Socket managementDataSocket = dataSocket.accept();// problème ici putaint
-
-
-      //  managementDataSocket.setSoTimeout(728242);
-        /*InputStream inDataStream = managementDataSocket.getInputStream();
-        OutputStream outDataStream = managementDataSocket.getOutputStream();
-        BufferedReader inputData = new BufferedReader(new InputStreamReader(inDataStream));
-        PrintWriter outputData = new PrintWriter(outDataStream);
-        String inDataString = inputData.readLine();
-        System.out.println(managementDataSocket.getPort());*///pas sur que c'est utile de mettre tout ca
-
-          System.out.println("Ok let's go ");
-
-/*        int isconnected = 0;
-        while(isconnected == 0){
-          if(inCommandString == "PASV\r\n"){
-            // appeler le truc passif
-            System.out.println("passive");
-            Passive pass = new Passive();
-            isconnected =  pass.connetPASV(managementCommandSocket, managementDataSocket, inCommandString);// ce truc si gènére un erreur mais je comprend pas pourquoi , je pense que je l'appelle mal mais je m'embrouille avec ces truc la si tu veux bien y regarder mon petit victor ca m'arrangerait ;)
-            //ca fonctionne pas car tu appelles une méthode située dans une autre classe... Il faut ou bien instancier un objet ou créer ces méthodes (active/passive ici)
-          }else if(inCommandString == null || inCommandString.length()<0){
-            System.out.println("Mauvaise Réception du message dans le InputStream");
-            outCommandStream.write("120\r\n".getBytes());
-            //attention il faut faire un truc en plus pour gérer ce cas mais pas tout de suite
-
-          }else{
-            // appeler le truc actifs
-            System.out.println("active");
-            Active act = new Active();
-            isconnected = act.connetACTV(managementCommandSocket, managementDataSocket, inCommandString);//idem que ligne (cette ligne)-3;
-          }
-
-        }*/
-
-
-
-
-
-        //Management newconnection = new Management(managementCommandSocket);// pas sur duqeul il faut envoyer
+        // We launch a new thread
         System.out.println("New connection incoming");
         exe.execute(new Management(managementCommandSocket, file_virtuel));
+      }// end while
 
-      }
     }catch(IOException e){
       System.out.println(e.getMessage());
-    }
-  }
-}
+    }// end try&catch
+  }//end constructor
+}// end function
 
 
 
