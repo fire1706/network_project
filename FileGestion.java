@@ -24,11 +24,15 @@ public class FileGestion{
 	int authorized = -1;
 	Socket socketClient = null;
 	Node currentNode = null;
+	ServerSocket passiveSocket = null;
+	Socket activeSocket = null;
+	Socket data = null;
+	OutputStream dataChannel = null;
 
 	//Constructor
-	FileGestion(Socket socketClient, int authorized, FileVirtuel file_virtuel){
+	FileGestion(Socket socketClient,/* int authorized,*/ FileVirtuel file_virtuel){
 		this.socketClient = socketClient;
-		this.authorized = authorized;
+		//this.authorized = authorized;
 		this.currentNode = file_virtuel.root;
 	}
 
@@ -52,8 +56,8 @@ public class FileGestion{
 
 				if(inString.contains("PWD")){
 					outStream.write("257 /\r\n".getBytes());
-				}
-				else if(inString.contains("LIST")){
+				/* --------- LIST -----------*/
+				}else if(inString.contains("LIST")){
 					System.out.println("ici");
 					outStream.write("212 list comes:\r\n".getBytes());
 					int sizeOfCurrentNode = currentNode.getSizeContent();
@@ -77,25 +81,84 @@ public class FileGestion{
 
 
 					// ici je pense pas que se sois la commande 110 vic Bien vu Thom MERCI!!
-				}
-				else if(inString.contains("SYST")){
+				/* --------- PASSIVE -----------*/
+				}else if(inString.contains("PASV")){
+					Random randNumber = new Random();
+      				int firstnum = randNumber.nextInt(156) +100;
+      				int secondnum = randNumber.nextInt(256);
+
+      				InetAddress addressIP = socketClient.getLocalAddress();
+      				InetAddress hostId = addressIP.getLocalHost();
+      				String host = hostId.getHostAddress();
+					host = host.replace(".",",");
+					
+					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
+        			outStream.write(message.getBytes());
+
+        			passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
+        			Socket data = passiveSocket.accept();
+        			try{
+        				dataChannel = data.getOutputStream();
+        			}catch(IOException e){
+        				e.printStackTrace();
+        			}
+
+        		/* --------- EPSV -----------*/
+        		}else if(inString.contains("EPSV")){
+        			Random randNumber = new Random();
+      				int firstnum = randNumber.nextInt(156) +100;
+      				int secondnum = randNumber.nextInt(256);
+
+      				InetAddress addressIP = socketClient.getLocalAddress();
+      				InetAddress hostId = addressIP.getLocalHost();
+      				String host = hostId.getHostAddress();
+					host = host.replace(".",",");
+					
+					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
+        			outStream.write(message.getBytes());
+
+        			passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
+        			Socket data = passiveSocket.accept();
+        			try{
+        				dataChannel = data.getOutputStream();
+        			
+        			}catch(IOException e){
+        				e.printStackTrace();
+        			}
+
+        		}else if(inString.contains("EPRT") || inString.contains("PORT")){
+        			outStream.write("200 \r\n".getBytes());
+
+				/* --------- SYST -----------*/
+				}else if(inString.contains("SYST")){
 					Properties prop = new Properties();
 					prop = System.getProperties();
 					str = prop.getProperty("os.arch");
 					outStream.write("215\r\n".getBytes());
-				}
-				else if(inString.contains("HELP")){
+				/* --------- HELP -----------*/
+				}else if(inString.contains("HELP")){
 
+				/* --------- null -----------*/
 				}else if(inString == null){
 					outStream.write("500\r\n".getBytes());
 
+				/* --------- CWD -----------*/
 				}else if(inString.contains("CWD")){
 					path = inString.substring(4);
 					List<Node> nextnodes = currentNode.getNextNodes();
 
 					//inString.
-
-				}else{
+				/* --------- TYPE -----------*/
+				}else if( inString.contains("TYPE")){
+                  if(inString.contains("I")){
+                    outStream.write("200 Type set to I\r\n".getBytes());
+                  }
+                  if(inString.contains("A")){
+                    outStream.write("200 Type set to A\r\n".getBytes());
+                  }
+                  //inString = inStream.readLine();
+                /* --------- DEFAULT -----------*/
+                }else{
 					outStream.write("502\r\n".getBytes());
 
 				}
