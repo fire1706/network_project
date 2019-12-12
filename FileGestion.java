@@ -1,8 +1,8 @@
 // grosse fonction comprenant tout les fonctins de gestion des fichiers
 // Downlmoads (RETR)
 // Uploads (STOR)
-// SYST
-// FEAT
+// SYST ok
+// FEAT 
 // MDTM
 // rename
 // delete
@@ -11,9 +11,9 @@
 
 // not mandatiry but very help fuuuuuull mageul
 // CDUP
-// CWD
-// LIST
-// PWD
+// CWD 
+// LIST ok
+// PWD ok
 //
 
 import java.net.*;
@@ -44,6 +44,7 @@ public class FileGestion{
 
           	BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
           	String inString = new String();
+          	String path = new String();
           	while(true){
 				inString = input.readLine();
 				System.out.println("boucle du menu FileGestion");
@@ -66,9 +67,10 @@ public class FileGestion{
 					
 
 					for(int i = 0; i<sizeOfCurrentNode; i++){
-						toSend = "/" + contentOfCurrentNode[i] + "\r\n";
+						toSend = contentOfCurrentNode[i] + "\r\n";
 						outStream.write(toSend.getBytes());
 					}
+					//décommenter ligne suivante pour test fin d'envoi
 					//outStream.write("212 End of list\r\n".getBytes());
 					System.out.println("Content must be send to Client");
 
@@ -87,12 +89,16 @@ public class FileGestion{
 				}else if(inString == null){
 					outStream.write("500\r\n".getBytes());
 
+				}else if(inString.contains("CWD")){
+					path = inString.substring(4);
+					List<Node> nextnodes = currentNode.getNextNodes();
+
+					//inString.
+
 				}else{
 					outStream.write("502\r\n".getBytes());
 
 				}
-
-
 
           	}
 
