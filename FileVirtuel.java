@@ -1,4 +1,5 @@
 import java.util.*;
+import java.lang.*;
 
 public class FileVirtuel{
 	Node root = null;
@@ -47,6 +48,8 @@ public class FileVirtuel{
 			System.out.println(privateFolder.getPath());
 			System.out.println(secret.getPath());
 			
+			System.out.println("----Date Format----");
+			System.out.println(myimage.getDataFormalism());
 
 			/* A ajouter si tu veux rajouter un dossier contenant un fichier dans private
 			Node folder = new Node("folder", privateFolder);
