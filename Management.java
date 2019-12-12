@@ -9,9 +9,14 @@ public class Management extends Thread {
   /*ExecutorService exe = Executors.newFixedThreadPool(maxThread);
   exe.execute(new Runnable() {
     Integer Maxthreads*/ // revoir la partie avec le thread pool j'ai du mal a l'utiliser correctement
-    Socket socketManagement;
+    Socket socketManagement = null;
+    FileVirtuel file_virtuel = null;
 
-  Management ( Socket _s/*, Socket _s2, Integer maxthreads*/, FileVirtuel file_virtuel){socketManagement=_s;/*, socketData=_s2,Maxthreads = maxthreads;*/}
+  Management ( Socket _s/*, Socket _s2, Integer maxthreads*/, FileVirtuel file_virtuel){
+    this.socketManagement=_s;
+    this.file_virtuel = file_virtuel;
+    /*, socketData=_s2,Maxthreads = maxthreads;*/
+  }
 
       @Override
       public void run(){
@@ -34,7 +39,7 @@ public class Management extends Thread {
 
           Authentification authentification = new Authentification(socketManagement);
           int typeOfConnection = authentification.authented(/*ÒÒsocketManagement/*,inCommandString*/); // O normal , 1 can access private folder
-          System.out.println(typeOfConnection);
+          System.out.println("type of connection: " + typeOfConnection);
           //------------------------------------------------------------------------------------
 
 
@@ -48,7 +53,7 @@ public class Management extends Thread {
 
 
             String inCommandString = inputCommand.readLine();
-            if( inCommandString != null){
+            if(inCommandString != null){
               while(true){
                 System.out.println(inCommandString);
                 if( inCommandString.contains("SYST")){
@@ -109,7 +114,7 @@ public class Management extends Thread {
 
           // Pour la suite crée un menu et répondre au demande du client avec les fonction de FileGestion
           if(typeOfConnection == 0 || typeOfConnection == 1){
-            FileGestion fileGestion = new FileGestion(socketManagement, typeOfConnection, FileVirtuel file_virtuel);
+            FileGestion fileGestion = new FileGestion(socketManagement, typeOfConnection, file_virtuel);
             fileGestion.menu();
           }else{
             System.out.println("Access denied");
