@@ -113,17 +113,24 @@ public class Node{
 		Node n = parent;
 
 			while(n != null){
-				System.out.println(str2);
-				System.out.println("Hello mon parent s appelle:" + n.getName());
-				str1 = n.getName();
-				System.out.println(str1);
-				str2 = str2 + "/" + str1;
-				System.out.println(str2);
+				
 				//System.out.println(str2);
+				//System.out.println("Hello mon parent s appelle:" + n.getName());
+				str1 = n.getName();
+				//System.out.println(str1);
+				if(n.isRoot() == true || n.getParent() == null){
+					str2 = str1 + str2 ;
+				}else{
+					str2 = str1 +"/"+ str2 ;
+				}
+				
+				
+				System.out.println(str2);
+				
 				n = n.getParent();
 				
 			}
-			str2 = "/" + str2;
+			//str2 = "/" + str2;
 			return str2;
 
 	}
