@@ -28,8 +28,7 @@ public class FileGestion{
 	Socket activeSocket = null;
 	Socket data = null;
 	OutputStream dataChannel = null;
-	int port = -1;
-	InetAddress hostI = null;
+
 
 	//Constructor
 	FileGestion(Socket socketClient,/* int authorized,*/ FileVirtuel file_virtuel){
@@ -51,6 +50,7 @@ public class FileGestion{
           	BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
           	String inString = new String();
           	String path = new String();
+
           	while(true){
 				inString = input.readLine();
 				System.out.println("boucle du menu FileGestion");
@@ -61,7 +61,7 @@ public class FileGestion{
 				/* --------- LIST -----------*/
 				}else if(inString.contains("LIST")){
 					System.out.println("ici");
-					outStream.write("212 list comes:\r\n".getBytes());
+					outStream.write("213 list comes:\r\n".getBytes());
 					int sizeOfCurrentNode = currentNode.getSizeContent();
 					String[] contentOfCurrentNode = new String[sizeOfCurrentNode];
 					String toSend = null;
@@ -74,7 +74,7 @@ public class FileGestion{
 
 					for(int i = 0; i<sizeOfCurrentNode; i++){
 						toSend = contentOfCurrentNode[i] + "\r\n";
-						outStream.write(toSend.getBytes());
+						dataChannel.write(toSend.getBytes());
 					}
 					//décommenter ligne suivante pour test fin d'envoi
 					//outStream.write("212 End of list\r\n".getBytes());
@@ -90,21 +90,21 @@ public class FileGestion{
 					int secondnum = randNumber.nextInt(256);
 
 					InetAddress addressIP = socketClient.getLocalAddress();
-					hostId = addressIP.getLocalHost();
+					InetAddress hostId = addressIP.getLocalHost();
 					String host = hostId.getHostAddress();
-					port = firstnum*256+secondnum;
+					int port = firstnum*256+secondnum;
 					host = host.replace(".",",");
 
 					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         			outStream.write(message.getBytes());
-
-        			/*passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
+							//outStream.write("225	Data connection open; no transfer in progress.\r\n".getBytes());
+        			passiveSocket = new ServerSocket(port);
         			Socket data = passiveSocket.accept();
         			try{
         				dataChannel = data.getOutputStream();
         			}catch(IOException e){
         				e.printStackTrace();
-        			}*/
+        			}
 
         		/* --------- EPSV -----------*/
         		}else if(inString.contains("EPSV")){
@@ -113,37 +113,62 @@ public class FileGestion{
       				int secondnum = randNumber.nextInt(256);
 
       				InetAddress addressIP = socketClient.getLocalAddress();
-      				hostId = addressIP.getLocalHost();
+      				InetAddress hostId = addressIP.getLocalHost();
       				String host = hostId.getHostAddress();
-							port = firstnum*256+secondnum;
+							int port = firstnum*256+secondnum;
 							host = host.replace(".",",");
 
-							String message = new String("229 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
+							String message = new String("229 Starting Extended Passive Mode (|||"+port+"|)\r\n");
         			outStream.write(message.getBytes());
+							outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
 
-        			//passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
-        			/*Socket data = passiveSocket.accept();
-        			try{
-        				dataChannel = data.getOutputStream();
+System.out.println("here1");
+							passiveSocket = new ServerSocket(port);
+System.out.println("here2");
+							try{
+								Socket data = passiveSocket.accept();
+							  dataChannel = data.getOutputStream();
+								outStream.write("225	Data connection open; no transfer in progress.\r\n".getBytes());
+							}catch(IOException e){
+								outStream.write("425	Can't open data connection.\r\n".getBytes());
+							  e.printStackTrace();
+							}
 
-        			}catch(IOException e){
-        				e.printStackTrace();
-        			}*/
 
-        		}else if(inString.contains("EPRT") || inString.contains("PORT")){
-							int n2 = inString.length() - 7 ;
+        		}else if(inString.contains("EPRT")){
+	/*						int n2 = inString.length() - 7 ;
 							String getAddr = inString.substring(8,n2);
 							System.out.println(getAddr);
-							data = new Socket(getAddr,1025,hostI,port);
+							Socket data = new Socket(hostI,port);
 
 							try{
         				dataChannel = data.getOutputStream();
 
         			}catch(IOException e){
         				e.printStackTrace();
-        			}
+        			}*/
 
         			outStream.write("200 \r\n".getBytes());
+
+						}else if(inString.contains("PORT")){
+				/*			int n2 = inString.length() - 7 ;
+							String getAddr = inString.substring(8,n2);
+							System.out.println(getAddr);
+							Socket data = new Socket(hostI,port);
+
+							try{
+								dataChannel = data.getOutputStream();
+
+							}catch(IOException e){
+								e.printStackTrace();
+							}*/
+
+							outStream.write("200 \r\n".getBytes());
+
+
+						}else if( inString.contains("FEAT")){
+						  outStream.write("211 to do \r\n".getBytes());
+
 
 
 				/* --------- SYST -----------*/
@@ -151,13 +176,14 @@ public class FileGestion{
 					Properties prop = new Properties();
 					prop = System.getProperties();
 					str = prop.getProperty("os.arch");
-					outStream.write("215\r\n".getBytes());
+					String mes = "215 "+str+" \r\n";
+					outStream.write(mes.getBytes());
 				/* --------- HELP -----------*/
 				}else if(inString.contains("HELP")){
 
 				/* --------- null -----------*/
 				}else if(inString == null){
-					outStream.write("500\r\n".getBytes());
+					outStream.write("500 \r\n".getBytes());
 
 				/* --------- CWD -----------*/
 				}else if(inString.contains("CWD")){
@@ -176,7 +202,7 @@ public class FileGestion{
                   //inString = inStream.readLine();
                 /* --------- DEFAULT -----------*/
                 }else{
-					outStream.write("502\r\n".getBytes());
+					outStream.write("502 \r\n".getBytes());
 
 				}
 
