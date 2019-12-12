@@ -55,7 +55,7 @@ public class Management extends Thread {
             String inCommandString = inputCommand.readLine();
             if(inCommandString != null){
               while(true){
-                System.out.println(inCommandString);
+                System.out.println("commande dans management" +inCommandString);
                 if( inCommandString.contains("SYST")){
                   Properties prop = new Properties();
                   prop = System.getProperties();
