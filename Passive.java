@@ -53,7 +53,7 @@ System.out.println(host);
       }
       int port = firstnum*256+secondnum; // a changer avec le port number que l'on utilise
       inString = inputConnection.readLine();
-      if(inString.contains("EPRT")){
+      if(inString.contains("EPRT") || inString.contains("PORT")){
         outConnectionStream.write("200 \r\n".getBytes());
         return 1;
       /*  System.out.println(inString);

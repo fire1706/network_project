@@ -29,15 +29,16 @@ String getAddr = null;
 
     try{
       OutputStream outConnectionStream = connection.getOutputStream();
-      if(inString.contains("EPRT")){
-        //outConnectionStream.write("200 \r\n".getBytes());
-        System.out.println(inString);
+      if(inString.contains("EPRT") || inString.contains("PORT")){
+        outConnectionStream.write("200 \r\n".getBytes());
+        return 1;
+      /*  System.out.println(inString);
         int n2 = inString.length() - 7 ;
         int n4 = n2+1;
         int n3 = inString.length() - 1 ;
         getAddr = inString.substring(8,n2);
         System.out.println(getAddr);
-        port = Integer.parseInt(inString.substring(n4,n3));
+        port = Integer.parseInt(inString.substring(n4,n3));*/
       }
 
       Socket data = new Socket(getAddr,port);
