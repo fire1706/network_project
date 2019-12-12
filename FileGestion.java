@@ -114,7 +114,7 @@ public class FileGestion{
       				String host = hostId.getHostAddress();
 					host = host.replace(".",",");
 					
-					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
+					String message = new String("229 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         			outStream.write(message.getBytes());
 
         			passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
