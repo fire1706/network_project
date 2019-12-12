@@ -23,7 +23,7 @@ import java.util.*;
 public class FileGestion{
 	int authorized = -1;
 	Socket socketClient = null;
-	FileGestion(Socket socketClient, int authorized){
+	FileGestion(Socket socketClient, int authorized, FileVirtuel file_virtuel){
 		this.socketClient = socketClient;
 		this.authorized = authorized;
 	}
