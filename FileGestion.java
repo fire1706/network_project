@@ -57,7 +57,8 @@ public class FileGestion{
 				System.out.println("Commande recue" + inString);
 
 				if(inString.contains("PWD")){
-					outStream.write("257 /\r\n".getBytes());
+					path = "257 "+currentNode.getPath()+"\r\n";
+					outStream.write(path.getBytes());
 				/* --------- LIST -----------*/
 				}else if(inString.contains("LIST")){
 					System.out.println("ici");
@@ -76,6 +77,7 @@ public class FileGestion{
 						toSend = contentOfCurrentNode[i] + "\r\n";
 						dataChannel.write(toSend.getBytes());
 					}
+					dataChannel.close();
 					//décommenter ligne suivante pour test fin d'envoi
 					//outStream.write("212 End of list\r\n".getBytes());
 					System.out.println("Content must be send to Client");
@@ -115,25 +117,24 @@ public class FileGestion{
       				InetAddress addressIP = socketClient.getLocalAddress();
       				InetAddress hostId = addressIP.getLocalHost();
       				String host = hostId.getHostAddress();
-							int port = firstnum*256+secondnum;
-							host = host.replace(".",",");
+					int port = firstnum*256+secondnum;
+					host = host.replace(".",",");
 
-							String message = new String("229 Starting Extended Passive Mode (|||"+port+"|)\r\n");
-        			outStream.write(message.getBytes());
-							outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
+					String message = new String("229 Starting Extended Passive Mode (|||"+port+"|)\r\n");
+   					outStream.write(message.getBytes());
+					outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
 
-System.out.println("here1");
-							passiveSocket = new ServerSocket(port);
-System.out.println("here2");
-							try{
-								Socket data = passiveSocket.accept();
-							  dataChannel = data.getOutputStream();
-								outStream.write("225	Data connection open; no transfer in progress.\r\n".getBytes());
-							}catch(IOException e){
-								outStream.write("425	Can't open data connection.\r\n".getBytes());
-							  e.printStackTrace();
-							}
-
+					System.out.println("here1");
+					passiveSocket = new ServerSocket(port);
+					System.out.println("here2");
+					try{
+						Socket data = passiveSocket.accept();
+					  	dataChannel = data.getOutputStream();
+						outStream.write("225	Data connection open; no transfer in progress.\r\n".getBytes());
+					}catch(IOException e){
+						outStream.write("425	Can't open data connection.\r\n".getBytes());
+					  	e.printStackTrace();
+					}
 
         		}else if(inString.contains("EPRT")){
 	/*						int n2 = inString.length() - 7 ;
