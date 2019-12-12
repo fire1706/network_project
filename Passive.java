@@ -15,13 +15,13 @@ import javax.imageio.ImageIO;
 //    --------------
 
 public class Passive{
-  public int connetPASV(Socket connection/*, Socket data*/, String inString){
+  public ServerSocket connetPASV(Socket connection/*, Socket data*/, String inString){
 
     try{
       OutputStream outConnectionStream = connection.getOutputStream();
       InputStream inConnectionStream = connection.getInputStream();
       BufferedReader inputConnection = new BufferedReader(new InputStreamReader(inConnectionStream));
-      Socket data = new Socket();
+      ServerSocket data = new ServerSocket();
       //String inString = inputConnection.readLine();
 
       // On vérifie que la demande est bien pour un connection passive
@@ -35,7 +35,7 @@ public class Passive{
       InetAddress ipAdresss = connection.getLocalAddress();
       InetAddress hostI = ipAdresss.getLocalHost();
       String host = hostI.getHostAddress();
-System.out.println(host);
+      System.out.println(host);
       host = host.replace(".",",");
       // vérifier quel port number il faut envoyer
       // on crée un port number random ( la probabilité est très très faible que l'on tombe sur un port déja utilisé)
@@ -44,6 +44,17 @@ System.out.println(host);
       int secondnum = randNumber.nextInt(256);
       //Permier Message
       if(inString.startsWith("PASV")){
+        ServerSocket dataChannel = new ServerSocket(firstnum * 256 + secondnum);
+        dataChannel.setSoTimeout(1000000);
+
+      while(true){
+        // We accpet the ServerSocket
+        Socket serverData = dataChannel.accept();
+        serverData.setSoTimeout(728242);
+
+        OutputStream outDataChannel = serverData.getOutputStream();
+
+
         String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         outConnectionStream.write(message.getBytes());
       }
