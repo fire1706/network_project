@@ -2,7 +2,7 @@
 // Downlmoads (RETR)
 // Uploads (STOR)
 // SYST ok
-// FEAT 
+// FEAT
 // MDTM
 // rename
 // delete
@@ -11,7 +11,7 @@
 
 // not mandatiry but very help fuuuuuull mageul
 // CDUP
-// CWD 
+// CWD
 // LIST ok
 // PWD ok
 //
@@ -28,6 +28,8 @@ public class FileGestion{
 	Socket activeSocket = null;
 	Socket data = null;
 	OutputStream dataChannel = null;
+	int port = -1;
+	InetAddress hostI = null;
 
 	//Constructor
 	FileGestion(Socket socketClient,/* int authorized,*/ FileVirtuel file_virtuel){
@@ -68,7 +70,7 @@ public class FileGestion{
 					}catch(NodeException e){
 						contentOfCurrentNode = null;
 					}
-					
+
 
 					for(int i = 0; i<sizeOfCurrentNode; i++){
 						toSend = contentOfCurrentNode[i] + "\r\n";
@@ -84,24 +86,25 @@ public class FileGestion{
 				/* --------- PASSIVE -----------*/
 				}else if(inString.contains("PASV")){
 					Random randNumber = new Random();
-      				int firstnum = randNumber.nextInt(156) +100;
-      				int secondnum = randNumber.nextInt(256);
+					int firstnum = randNumber.nextInt(156) +100;
+					int secondnum = randNumber.nextInt(256);
 
-      				InetAddress addressIP = socketClient.getLocalAddress();
-      				InetAddress hostId = addressIP.getLocalHost();
-      				String host = hostId.getHostAddress();
+					InetAddress addressIP = socketClient.getLocalAddress();
+					hostId = addressIP.getLocalHost();
+					String host = hostId.getHostAddress();
+					port = firstnum*256+secondnum;
 					host = host.replace(".",",");
-					
+
 					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         			outStream.write(message.getBytes());
 
-        			passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
+        			/*passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
         			Socket data = passiveSocket.accept();
         			try{
         				dataChannel = data.getOutputStream();
         			}catch(IOException e){
         				e.printStackTrace();
-        			}
+        			}*/
 
         		/* --------- EPSV -----------*/
         		}else if(inString.contains("EPSV")){
@@ -110,24 +113,38 @@ public class FileGestion{
       				int secondnum = randNumber.nextInt(256);
 
       				InetAddress addressIP = socketClient.getLocalAddress();
-      				InetAddress hostId = addressIP.getLocalHost();
+      				hostId = addressIP.getLocalHost();
       				String host = hostId.getHostAddress();
-					host = host.replace(".",",");
-					
-					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
+							port = firstnum*256+secondnum;
+							host = host.replace(".",",");
+
+							String message = new String("229 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         			outStream.write(message.getBytes());
 
-        			passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
-        			Socket data = passiveSocket.accept();
+        			//passiveSocket = new ServerSocket(firstnum * 256 + secondnum);
+        			/*Socket data = passiveSocket.accept();
         			try{
         				dataChannel = data.getOutputStream();
-        			
+
+        			}catch(IOException e){
+        				e.printStackTrace();
+        			}*/
+
+        		}else if(inString.contains("EPRT") || inString.contains("PORT")){
+							int n2 = inString.length() - 7 ;
+							String getAddr = inString.substring(8,n2);
+							System.out.println(getAddr);
+							data = new Socket(getAddr,1025,hostI,port);
+
+							try{
+        				dataChannel = data.getOutputStream();
+
         			}catch(IOException e){
         				e.printStackTrace();
         			}
 
-        		}else if(inString.contains("EPRT") || inString.contains("PORT")){
         			outStream.write("200 \r\n".getBytes());
+
 
 				/* --------- SYST -----------*/
 				}else if(inString.contains("SYST")){
