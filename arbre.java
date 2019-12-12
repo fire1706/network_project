@@ -42,6 +42,13 @@ public class arbre{
 			Node myimage = new Node("myimage.bmp", myImg, root);
 			root.addNextNode(myimage);
 
+			/* A ajouter si tu veux rajouter un dossier contenant un fichier dans private
+			Node folder = new Node("folder", privateFolder);
+			privateFolder.addNextNode(folder);
+
+			Node text = new Node("text.txt", folder);
+			folder.addNextNode(text);
+			*/
 			int size = root.getSizeContent();
 
 			String[] str = new String[size];
@@ -49,21 +56,6 @@ public class arbre{
 			for(int i=0; i<size; i++){
 				System.out.println(str[i]);
 			}
-
-			System.out.println(secret.getRepository());
-
-			
-			// String str2 = new String("");
-			// Node n = privateFolder;
-			// while(n != null){
-			// 	//System.out.println(n.getName());
-			// 	str2 = n.getName() + "/";
-			// 	//System.out.println(str2);
-			// 	n = n.getParent();
-			// }
-			
-				
-
 			//System.out.println(str2);
 			
 
