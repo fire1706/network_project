@@ -25,6 +25,9 @@ public class FTPServer{
     }
     ExecutorService exe = Executors.newFixedThreadPool(maxThread);
 
+    /* Instantiation fichiers virtuels */
+    FileVirtuel file_virtuel = new FileVirtuel();
+
 
     try{
       ServerSocket commandSocket = new ServerSocket(2106);
@@ -92,7 +95,7 @@ public class FTPServer{
 
         //Management newconnection = new Management(managementCommandSocket);// pas sur duqeul il faut envoyer
         System.out.println("New connection incoming");
-        exe.execute(new Management(managementCommandSocket));
+        exe.execute(new Management(managementCommandSocket, file_virtuel));
 
       }
     }catch(IOException e){
