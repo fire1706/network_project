@@ -4,6 +4,7 @@ public class Node{
 	private List<Node> nextNodes = new ArrayList<Node>();
 	private Node parent = null;
 	private String name = null;
+	private String path = null;
 	private boolean isDirectory = false;
 	private boolean isFile = false;
 	private boolean isRoot = false;
@@ -21,6 +22,7 @@ public class Node{
 		this.name = name;
 		this.isDirectory = true;
 		this.isRoot = isRoot;
+		this.path = name;
 
 	}
 
@@ -31,8 +33,13 @@ public class Node{
 		this.name = name;
 		this.isDirectory = true;
 		this.parent = parent;
-
+		if(parent.isRoot() == true){
+			this.path = parent.getPath() + name;
+		}else{
+			this.path = parent.getPath() + "/" + name;
+		}
 	}
+	
 
 	Node(String name, byte[] data, Node parent) throws NodeException{
 		if(parent.isDirectory() == false)
@@ -41,6 +48,11 @@ public class Node{
 		this.data = data;
 		this.isFile = true;
 		this.parent = parent;
+		if(parent.isRoot() == true){
+			this.path = parent.getPath() + name;
+		}else{
+			this.path = parent.getPath() + "/" + name;
+		}
 	}
 
 	public List<Node> getNextNodes(){
@@ -53,6 +65,10 @@ public class Node{
 
 	public String getName(){
 		return name;
+	}
+
+	public String getPath(){
+		return path;
 	}
 
 	public boolean isDirectory(){
@@ -105,34 +121,6 @@ public class Node{
 		if(isDirectory == false)
 			return 0;
 		return nextNodes.size();
-	}
-
-	public String getRepository(){
-		String str2 = new String("");
-		String str1 = null;
-		Node n = parent;
-
-			while(n != null){
-				
-				//System.out.println(str2);
-				//System.out.println("Hello mon parent s appelle:" + n.getName());
-				str1 = n.getName();
-				//System.out.println(str1);
-				if(n.isRoot() == true || n.getParent() == null){
-					str2 = str1 + str2 ;
-				}else{
-					str2 = str1 +"/"+ str2 ;
-				}
-				
-				
-				System.out.println(str2);
-				
-				n = n.getParent();
-				
-			}
-			//str2 = "/" + str2;
-			return str2;
-
 	}
 
 	
