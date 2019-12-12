@@ -49,7 +49,7 @@ public class Node{
 		}
 		Date d = new Date();
 		this.date = d.toString();
-		this.dataFormalism = "-rw-rw-rw-\t1\tuser\tgroup\t0\t" + this.date +"\t"+ this.name;	
+		this.dataFormalism = "-rw-rw-rw-\t2\tuser\tgroup\t0\t" + this.date +"\t"+ this.name;	
 		//Debug version
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
 	}
@@ -148,7 +148,7 @@ public class Node{
 			Node n = null;
 			for(int i=0; i<size; i++){
 				n = (Node) array[i];
-				str[i] = n.getName();
+				str[i] = n.getDataFormalism();
 			}
 			return str;
 		}
