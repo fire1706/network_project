@@ -42,6 +42,10 @@ public class FileVirtuel{
 
 			Node myimage = new Node("myimage.bmp", myImg, root);
 			root.addNextNode(myimage);
+
+			System.out.println(myimage.getPath());
+			System.out.println(privateFolder.getPath());
+			System.out.println(secret.getPath());
 			
 
 			/* A ajouter si tu veux rajouter un dossier contenant un fichier dans private
@@ -92,20 +96,7 @@ public class FileVirtuel{
 		return str;
 	}
 
-	// public static String getRepository(Node node){
-	// 	String str2 = new String("");
-	// 	Node n = node;
-
-	// 		while(n.getParent() != null){
-	// 			//System.out.println(n.getName());
-	// 			str2 = n.getName() + "/";
-	// 			//System.out.println(str2);
-	// 			n = n.getParent();
-	// 		}
-	// 		str2 = "/" + str2;
-	// 		return str2;
-
-	// }
+	
 
 
 
