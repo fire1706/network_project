@@ -1,4 +1,5 @@
 import java.util.*;
+import java.lang.*;
 
 public class Node{
 	private List<Node> nextNodes = new ArrayList<Node>();
@@ -9,7 +10,11 @@ public class Node{
 	private boolean isFile = false;
 	private boolean isRoot = false;
 	private byte[] data = null;
+	private int dataSize = 0;
+	private String date = null;
+	private String dataFormalism = new String();
 
+	/*--------------- Constructors ---------------*/
 	Node(){}
 
 	Node(String name){
@@ -23,6 +28,10 @@ public class Node{
 		this.isDirectory = true;
 		this.isRoot = isRoot;
 		this.path = name;
+		Date d = new Date();
+		this.date = d.toString();
+		this.dataFormalism = "-rw-rw-rw-\t2\tuser\tgroup\t0\t" + this.date +"\t"+this.name;
+		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n"	;
 
 	}
 
@@ -38,6 +47,11 @@ public class Node{
 		}else{
 			this.path = parent.getPath() + "/" + name;
 		}
+		Date d = new Date();
+		this.date = d.toString();
+		this.dataFormalism = "-rw-rw-rw-\t1\tuser\tgroup\t0\t" + this.date +"\t"+ this.name;	
+		//Debug version
+		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
 	}
 	
 
@@ -53,7 +67,14 @@ public class Node{
 		}else{
 			this.path = parent.getPath() + "/" + name;
 		}
+		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
+		Date d = new Date();
+		this.date = d.toString();
+		this.dataFormalism = "-rw-rw-rw-\t1\tuser\tgroup\t0\t" + this.date +"\t"+ this.name;
+
 	}
+
+	/*--------------- Accessors ---------------*/
 
 	public List<Node> getNextNodes(){
 		return nextNodes;
@@ -95,6 +116,22 @@ public class Node{
 		return nextNodes.remove((Node) removeNode);
 	}
 
+	
+
+	
+
+	public String getDataFormalism(){
+		return dataFormalism;
+	}
+
+	/*--------------- Methods ---------------*/
+
+	public int getSizeContent(){
+		if(isDirectory == false)
+			return 0;
+		return nextNodes.size();
+	}
+
 	public String[] getDirectoryContent() throws NodeException{
 		if(isDirectory == false){
 			throw new NodeException("Cannot get content");
@@ -116,14 +153,6 @@ public class Node{
 			return str;
 		}
 	}
-
-	public int getSizeContent(){
-		if(isDirectory == false)
-			return 0;
-		return nextNodes.size();
-	}
-
-	
 
 
 
