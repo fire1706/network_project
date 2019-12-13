@@ -101,14 +101,17 @@ System.out.println("tak 2");
 
 					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
         	outStream.write(message.getBytes());
-					//outStream.write("225	Data connection open; no transfer in progress.\r\n".getBytes());
-        	passiveSocket = new ServerSocket(port);
-        	Socket data = passiveSocket.accept();
-        	try{
-        		dataChannel = data.getOutputStream();
-        	}catch(IOException e){
-        		e.printStackTrace();
-        	}
+					outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
+
+					passiveSocket = new ServerSocket(port);
+					try{
+						Socket data = passiveSocket.accept();
+					  dataChannel = data.getOutputStream();
+						outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+					}catch(IOException e){
+						outStream.write("425	Can't open data connection.\r\n".getBytes());
+					  e.printStackTrace();
+					}
 
         /* --------- EPSV -----------*/
         }else if(inString.contains("EPSV")){
