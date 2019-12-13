@@ -1,5 +1,6 @@
 import java.util.*;
 import java.lang.*;
+import java.text.*;
 
 public class Node{
 	private List<Node> nextNodes = new ArrayList<Node>();
@@ -29,8 +30,9 @@ public class Node{
 		this.isRoot = isRoot;
 		this.path = name;
 		Date d = new Date();
-		this.date = d.toString();
-		this.dataFormalism = "-rw-rw-rw-\t2\tuser\tgroup\t0\t" + this.date +"\t"+this.name;
+		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
+		this.date = simpledateformat.format(d);
+		this.dataFormalism = "-drwx-xr-x-\t2 user\tgroup\t"+this.dataSize+"\t" + this.date +"\t"+this.name;
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n"	;
 
 	}
@@ -48,8 +50,9 @@ public class Node{
 			this.path = parent.getPath() + "/" + name;
 		}
 		Date d = new Date();
-		this.date = d.toString();
-		this.dataFormalism = "-rw-rw-rw-\t2\tuser\tgroup\t0\t" + this.date +"\t"+ this.name;	
+		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
+		this.date = simpledateformat.format(d);
+		this.dataFormalism = "-drwx-r--r--\t1 user\tgroup\t"+ this.dataSize+ "\t" + this.date +"\t"+ this.name;	
 		//Debug version
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
 	}
@@ -67,10 +70,12 @@ public class Node{
 		}else{
 			this.path = parent.getPath() + "/" + name;
 		}
+		this.dataSize = data.length;
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
 		Date d = new Date();
-		this.date = d.toString();
-		this.dataFormalism = "-rw-rw-rw-\t1\tuser\tgroup\t0\t" + this.date +"\t"+ this.name;
+		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
+		this.date = simpledateformat.format(d);
+		this.dataFormalism = "-rw-rw-rw-\t1 user\tgroup\t"+this.dataSize+"\t" + this.date +"\t"+ this.name;
 
 	}
 
@@ -107,9 +112,13 @@ public class Node{
 	public byte[] getData(){
 		return data;
 	}
+	public int getDataSize(){
+		return dataSize;
+	}
 
 	public void addNextNode(Node nextNode){
 		nextNodes.add(nextNode);
+		this.dataSize = this.dataSize + nextNode.getDataSize();
 	}
 
 	public boolean removeNode(Node removeNode){
@@ -148,7 +157,7 @@ public class Node{
 			Node n = null;
 			for(int i=0; i<size; i++){
 				n = (Node) array[i];
-				str[i] = n.getDataFormalism();
+				str[i] = n.getDataFormalism() +"\r\n";
 			}
 			return str;
 		}
