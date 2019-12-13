@@ -78,10 +78,11 @@ System.out.println("tak 2");
 						toSend = contentOfCurrentNode[i] + "\r\n";
 						dataChannel.write(toSend.getBytes());
 					}
-					//dataChannel.close();
-					data.close();
+					outStream.write("226 Data connection gonna be closed\r\n".getBytes());
+					dataChannel.close();
+					//data.close();
 					//décommenter ligne suivante pour test fin d'envoi
-					outStream.write("212 End of list\r\n".getBytes());
+
 					System.out.println("Content must be send to Client");
 
 
