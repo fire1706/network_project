@@ -165,19 +165,28 @@ System.out.println("tak 2");
 
 
 						}else if(inString.contains("PORT")){
-				/*			int n2 = inString.length() - 7 ;
-							String getAddr = inString.substring(8,n2);
-							System.out.println(getAddr);
-							Socket data = new Socket(hostI,port);
 
-							try{
-								dataChannel = data.getOutputStream();
-
-							}catch(IOException e){
-								e.printStackTrace();
-							}*/
+							int n1 = inString.length();
+							int n2 = inString.length() - 7;
+							int n3 = 5;
+							int n4 = inString.length() - 8;
+							String getAddr = inString.substring(n3,n4);
+							getAddr = getAddr.replace(",",".");
+							String portS = inString.substring(n1,n2);
+							int p1 = Integer.valueOf(portS.substring(0,3));
+							int p2 = Integer.valueOf(portS.substring(4,7));
+							int port = p1*256 +p2;
 
 							outStream.write("200 \r\n".getBytes());
+							try{
+								outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
+								Socket data = new Socket(getAddr,port);
+        				dataChannel = data.getOutputStream();
+								outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+        			}catch(IOException e){
+								outStream.write("425	Can't open data connection.\r\n".getBytes());
+        				e.printStackTrace();
+        			}
 
 
 						}else if( inString.contains("FEAT")){
@@ -201,29 +210,8 @@ System.out.println("tak 2");
 
 				/* --------- CWD -----------*/
 				}else if(inString.contains("CWD")){
-
 					path = inString.substring(4);
 					List<Node> nextnodes = currentNode.getNextNodes();
-					Object[] array = nextnodes.toArray();
-					Node n = null;
-					int size = nextnodes.size();
-
-
-					for(int i = 0; i<size ; i++){
-
-						n = (Node) array[i];
-						System.out.println(n.getName());
-						System.out.println(n.getPath());
-						if(path.contains(n.getName()) || path.contains(n.getPath())){
-							this.currentNode = n;
-							str = "200 directory changed to " + currentNode.getPath();
-							outStream.write(str.getBytes());
-						}else{
-							outStream.write("501 error in arguments".getBytes());
-						}
-					
-
-					}
 
 					//inString.
 				/* --------- TYPE -----------*/
