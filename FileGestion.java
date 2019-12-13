@@ -59,6 +59,8 @@ public class FileGestion{
 				if(inString.contains("PWD")){
 					path = "257 "+currentNode.getPath()+"\r\n";
 					outStream.write(path.getBytes());
+
+
 				/* --------- LIST -----------*/
 				}else if(inString.contains("LIST")){
 					System.out.println("ici");
@@ -75,12 +77,12 @@ System.out.println("tak 1");
 System.out.println("tak 2");
 
 					for(int i = 0; i<sizeOfCurrentNode; i++){
-						toSend = contentOfCurrentNode[i] + "\r\n";
+						toSend = contentOfCurrentNode[i] + "\r\n";// regarder MLSD facon d'envoyer les truc 
 						dataChannel.write(toSend.getBytes());
 					}
 					outStream.write("226 Data connection gonna be closed\r\n".getBytes());
-					dataChannel.close();
-					//data.close();
+					//dataChannel.close();
+					data.close();
 					//décommenter ligne suivante pour test fin d'envoi
 
 					System.out.println("Content must be send to Client");
@@ -136,7 +138,7 @@ System.out.println("tak 2");
 					try{
 						Socket data = passiveSocket.accept();
 					  	dataChannel = data.getOutputStream();
-						outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+						//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
 					}catch(IOException e){
 						outStream.write("425	Can't open data connection.\r\n".getBytes());
 					  	e.printStackTrace();
