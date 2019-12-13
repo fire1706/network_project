@@ -201,8 +201,29 @@ System.out.println("tak 2");
 
 				/* --------- CWD -----------*/
 				}else if(inString.contains("CWD")){
+
 					path = inString.substring(4);
 					List<Node> nextnodes = currentNode.getNextNodes();
+					Object[] array = nextnodes.toArray();
+					Node n = null;
+					int size = nextnodes.size();
+
+
+					for(int i = 0; i<size ; i++){
+
+						n = (Node) array[i];
+						System.out.println(n.getName());
+						System.out.println(n.getPath());
+						if(path.contains(n.getName()) || path.contains(n.getPath())){
+							this.currentNode = n;
+							str = "200 directory changed to " + currentNode.getPath();
+							outStream.write(str.getBytes());
+						}else{
+							outStream.write("501 error in arguments".getBytes());
+						}
+					
+
+					}
 
 					//inString.
 				/* --------- TYPE -----------*/
