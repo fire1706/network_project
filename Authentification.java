@@ -54,9 +54,12 @@ public class Authentification{
           else if(inString.startsWith("PASS") && inString.contains("123456")){
               outStream.write("230 you are connected\r\n".getBytes());
               return 1;
+          }else if(inString.contains("AUTH")){
+    					outStream.write("502 Command not implemented\r\n".getBytes());
           }else{
               outStream.write("430\r\n".getBytes());
               System.out.println("Retry for the authentification.");
+
           }// end First if
 
       }// end While

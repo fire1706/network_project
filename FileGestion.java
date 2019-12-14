@@ -54,16 +54,22 @@ public class FileGestion{
       while(true){
 				inString = input.readLine();
 				System.out.println("boucle du menu FileGestion");
+
 				System.out.println("Commande recue" + inString);
 
 				if(inString.contains("PWD")){
 					path = "257 "+currentNode.getPath()+"\r\n";
 					outStream.write(path.getBytes());
 
+				}else if(inString.contains("AUTH")){
+					outStream.write("502 command not supported\r\n".getBytes());
+
+
 
 				/* --------- LIST -----------*/
 				}else if(inString.contains("LIST")){
 					System.out.println("ici");
+
 					outStream.write("213 list comes:\r\n".getBytes());
 					int sizeOfCurrentNode = currentNode.getSizeContent();
 					String[] contentOfCurrentNode = new String[sizeOfCurrentNode];
@@ -75,14 +81,16 @@ System.out.println("tak 1");
 						contentOfCurrentNode = null;
 					}
 System.out.println("tak 2");
-
+outStream.write("125 Data connection already open; transfer starting\r\n".getBytes());
 					for(int i = 0; i<sizeOfCurrentNode; i++){
-						toSend = contentOfCurrentNode[i] + "\r\n";// regarder MLSD facon d'envoyer les truc 
+						toSend = contentOfCurrentNode[i] + "\r\n";// regarder MLSD facon d'envoyer les truc
 						dataChannel.write(toSend.getBytes());
 					}
 					outStream.write("226 Data connection gonna be closed\r\n".getBytes());
 					//dataChannel.close();
-					data.close();
+
+					//data.close();
+
 					//décommenter ligne suivante pour test fin d'envoi
 
 					System.out.println("Content must be send to Client");
@@ -102,13 +110,15 @@ System.out.println("tak 2");
 					int port = firstnum*256+secondnum;
 					host = host.replace(".",",");
 
-					String message = new String("227 Entering Passive Mode("+host+","+firstnum+","+secondnum+")\r\n");
+					String message = new String("227 Entering Passive Mode ("+host+","+firstnum+","+secondnum+")\r\n");
         	outStream.write(message.getBytes());
 					outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
-
+System.out.println("hrenajb");
 					passiveSocket = new ServerSocket(port);
 					try{
+System.out.println("hrenajb");
 						Socket data = passiveSocket.accept();
+System.out.println("hrenajb");
 					  dataChannel = data.getOutputStream();
 						outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
 					}catch(IOException e){
@@ -137,6 +147,7 @@ System.out.println("tak 2");
 					System.out.println("here2");
 					try{
 						Socket data = passiveSocket.accept();
+
 					  	dataChannel = data.getOutputStream();
 						//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
 					}catch(IOException e){
@@ -175,9 +186,12 @@ System.out.println("tak 2");
 							int n4 = inString.length() - 8;
 							String getAddr = inString.substring(n3,n4);
 							getAddr = getAddr.replace(",",".");
-							String portS = inString.substring(n1,n2);
+System.out.println(getAddr);
+							String portS = inString.substring(n2,n1);
+	System.out.println(portS+"  "+portS.length());
 							int p1 = Integer.valueOf(portS.substring(0,3));
 							int p2 = Integer.valueOf(portS.substring(4,7));
+System.out.println(p1+"  "+p2);
 							int port = p1*256 +p2;
 
 							outStream.write("200 \r\n".getBytes());
