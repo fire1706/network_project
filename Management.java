@@ -29,19 +29,21 @@ public class Management extends Thread {
           OutputStream outCommandStream = socketManagement.getOutputStream();
 
           BufferedReader inputCommand = new BufferedReader(new InputStreamReader(inCommandStream));
+
+          outCommandStream.write("220 server ready\r\n".getBytes());
           /*PrintWriter outputCommand= new PrintWriter(outCommandStream);
           String inCommandString = inputCommand.readLine();*/
           //-----------------------------------------------------------------------------------
 
 
           //--------------------------Authentification------------------------------------------
-              System.out.println("Let's do the authentification");
+          System.out.println("Let's do the authentification");
 
           Authentification authentification = new Authentification(socketManagement);
           int typeOfConnection = authentification.authented(/*ÒÒsocketManagement/*,inCommandString*/); // O normal , 1 can access private folder
           System.out.println("type of connection: " + typeOfConnection);
           //------------------------------------------------------------------------------------
-          FileGestion fileGestion = new FileGestion(socketManagement, file_virtuel);
+          FileGestion fileGestion = new FileGestion(socketManagement, file_virtuel, typeOfConnection);
           fileGestion.menu();
           socketManagement.close();
 
