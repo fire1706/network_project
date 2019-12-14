@@ -44,17 +44,16 @@ public class FTPServer{
       // We create a ServerSocket with port 21xx for the connection
       ServerSocket commandSocket = new ServerSocket(2106);
       commandSocket.setSoTimeout(1000000);
+      Socket managementCommandSocket = null;
 
       while(true){
         // We accpet the ServerSocket
-        Socket managementCommandSocket = commandSocket.accept();
+        managementCommandSocket = commandSocket.accept();
         managementCommandSocket.setSoTimeout(728242); // timeout define to wait x second , if it is reach the Socket closed
 
-        OutputStream outCommandStream = managementCommandSocket.getOutputStream();
 
         // We say that the server is ready to get command and data
         System.out.println("Ok let's go ");
-        outCommandStream.write("220 server ready\r\n".getBytes());
 
         // We launch a new thread
         System.out.println("New connection incoming");
