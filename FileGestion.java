@@ -70,7 +70,7 @@ public class FileGestion{
 				}else if(inString.contains("LIST")){
 					System.out.println("ici");
 
-					outStream.write("213 list comes:\r\n".getBytes());
+					//outStream.write("213 list comes:\r\n".getBytes());
 					int sizeOfCurrentNode = currentNode.getSizeContent();
 					String[] contentOfCurrentNode = new String[sizeOfCurrentNode];
 					String toSend = null;
@@ -89,7 +89,7 @@ outStream.write("125 Data connection already open; transfer starting\r\n".getByt
 					outStream.write("226 Data connection gonna be closed\r\n".getBytes());
 					//dataChannel.close();
 
-					//data.close();
+					data.close();
 
 					//décommenter ligne suivante pour test fin d'envoi
 
@@ -227,8 +227,29 @@ System.out.println(p1+"  "+p2);
 
 				/* --------- CWD -----------*/
 				}else if(inString.contains("CWD")){
+
 					path = inString.substring(4);
 					List<Node> nextnodes = currentNode.getNextNodes();
+					Object[] array = nextnodes.toArray();
+					Node n = null;
+					int size = nextnodes.size();
+
+
+					for(int i = 0; i<size ; i++){
+
+						n = (Node) array[i];
+						System.out.println(n.getName());
+						System.out.println(n.getPath());
+						if(path.contains(n.getName()) || path.contains(n.getPath())){
+							this.currentNode = n;
+							str = "200 directory changed to " + currentNode.getPath();
+							outStream.write(str.getBytes());
+						}else{
+							outStream.write("501 error in arguments".getBytes());
+						}
+
+
+					}
 
 					//inString.
 				/* --------- TYPE -----------*/
