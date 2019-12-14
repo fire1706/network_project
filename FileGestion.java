@@ -253,21 +253,24 @@ System.out.println(p1+"  "+p2);
 
 					/* ---------CDUP-------------*/
 				}else if(inString.contains("CDUP")){
-					if(this.currentNode.getParent()){
-						outStream.write("250 okay \r\n".getBytes());
-					}else{
-						outStream.write("550 not Okay \r\n".getBytes());
+					try{
+							currentNode.getParent();// on peut faire a l'identique car ici il n'y a que un seul dossier !
+							outStream.write("250 okay \r\n".getBytes());
+					}catch(Exception e){
+							outStream.write("550 not Okay \r\n".getBytes());
 					}
+
 
 					/* ---------RMD-------------*/
 				}else if(inString.contains("RMD")){
-					if(this.currentNode.getParent()){// on peut faire a l'identique car ici il n'y a que un seul dossier !
-						outStream.write("250 okay \r\n".getBytes());
-					}else{
-						outStream.write("550 not Okay \r\n".getBytes());
+					try{
+							currentNode.getParent();// on peut faire a l'identique car ici il n'y a que un seul dossier !
+							outStream.write("250 okay \r\n".getBytes());
+					}catch(Exception e){
+							outStream.write("550 not Okay \r\n".getBytes());
 					}
 
-					//inString.
+
 				/* --------- TYPE -----------*/
 				}else if( inString.contains("TYPE")){
                   if(inString.contains("I")){
@@ -276,7 +279,7 @@ System.out.println(p1+"  "+p2);
                   if(inString.contains("A")){
                     outStream.write("200 Type set to A\r\n".getBytes());
                   }
-                  //inString = inStream.readLine();
+
                 /* --------- DEFAULT -----------*/
                 }else{
 					outStream.write("502 command not implementeds\r\n".getBytes());
