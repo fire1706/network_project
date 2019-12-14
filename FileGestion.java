@@ -58,7 +58,7 @@ public class FileGestion{
 				System.out.println("Commande recue" + inString);
 
 				if(inString.contains("PWD")){
-					path = "257 "+currentNode.getPath()+"\r\n";
+					path = "257 "+currentNode.getPath()+" \r\n";
 					outStream.write(path.getBytes());
 
 				}else if(inString.contains("AUTH")){
@@ -242,13 +242,29 @@ System.out.println(p1+"  "+p2);
 						System.out.println(n.getPath());
 						if(path.contains(n.getName()) || path.contains(n.getPath())){
 							this.currentNode = n;
-							str = "200 directory changed to " + currentNode.getPath();
+							str = "250 directory changed to " + currentNode.getPath();
 							outStream.write(str.getBytes());
 						}else{
 							outStream.write("501 error in arguments".getBytes());
 						}
 
 
+					}
+
+					/* ---------CDUP-------------*/
+				}else if(inString.contains("CDUP")){
+					if(this.currentNode.getParent()){
+						outStream.write("250 okay \r\n".getBytes());
+					}else{
+						outStream.write("550 not Okay \r\n".getBytes());
+					}
+
+					/* ---------RMD-------------*/
+				}else if(inString.contains("RMD")){
+					if(this.currentNode.getParent()){// on peut faire a l'identique car ici il n'y a que un seul dossier !
+						outStream.write("250 okay \r\n".getBytes());
+					}else{
+						outStream.write("550 not Okay \r\n".getBytes());
 					}
 
 					//inString.
