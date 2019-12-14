@@ -52,7 +52,7 @@ public class FileGestion{
       String path = new String();
 
       while(true){
-				inString = input.readLine();
+				while((inString = input.readLine())== null){}// pour pouvoir attendre la commande et pas recevoir un null et avoir une exception
 				System.out.println("boucle du menu FileGestion");
 
 				System.out.println("Commande recue" + inString);
@@ -81,7 +81,7 @@ System.out.println("tak 1");
 						contentOfCurrentNode = null;
 					}
 System.out.println("tak 2");
-outStream.write("125 Data connection already open; transfer starting\r\n".getBytes());
+//outStream.write("125 Data connection already open; transfer starting\r\n".getBytes());
 					for(int i = 0; i<sizeOfCurrentNode; i++){
 						toSend = contentOfCurrentNode[i] + "\r\n";// regarder MLSD facon d'envoyer les truc
 						dataChannel.write(toSend.getBytes());
@@ -113,14 +113,14 @@ outStream.write("125 Data connection already open; transfer starting\r\n".getByt
 					String message = new String("227 Entering Passive Mode ("+host+","+firstnum+","+secondnum+")\r\n");
         	outStream.write(message.getBytes());
 					outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
-System.out.println("hrenajb");
+
 					passiveSocket = new ServerSocket(port);
 					try{
-System.out.println("hrenajb");
+
 						Socket data = passiveSocket.accept();
-System.out.println("hrenajb");
+
 					  dataChannel = data.getOutputStream();
-						outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+						//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
 					}catch(IOException e){
 						outStream.write("425	Can't open data connection.\r\n".getBytes());
 					  e.printStackTrace();
@@ -170,7 +170,7 @@ System.out.println("hrenajb");
 								outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
 								Socket data = new Socket(getAddr,port);
         				dataChannel = data.getOutputStream();
-								outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+								//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
         			}catch(IOException e){
 								outStream.write("425	Can't open data connection.\r\n".getBytes());
         				e.printStackTrace();
@@ -199,7 +199,7 @@ System.out.println(p1+"  "+p2);
 								outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
 								Socket data = new Socket(getAddr,port);
         				dataChannel = data.getOutputStream();
-								outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+								//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
         			}catch(IOException e){
 								outStream.write("425	Can't open data connection.\r\n".getBytes());
         				e.printStackTrace();
@@ -263,7 +263,7 @@ System.out.println(p1+"  "+p2);
                   //inString = inStream.readLine();
                 /* --------- DEFAULT -----------*/
                 }else{
-					outStream.write("502 \r\n".getBytes());
+					outStream.write("502 command not implementeds\r\n".getBytes());
 
 				}
 
