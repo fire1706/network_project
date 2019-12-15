@@ -57,7 +57,7 @@ public class Authentification{
           }else if(inString.contains("AUTH")){
     					outStream.write("502 Command not implemented\r\n".getBytes());
           }else{
-              outStream.write("430\r\n".getBytes());
+              outStream.write("430 Retry for the authentification\r\n".getBytes());
               System.out.println("Retry for the authentification.");
 
           }// end First if
