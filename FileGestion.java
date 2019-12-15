@@ -21,13 +21,14 @@ import java.io.*;
 import java.util.*;
 
 public class FileGestion{
-	int authorized = -1; // =1 si Sam =0 si anonymous
-	Socket socketClient = null;
-	Node currentNode = null;
-	ServerSocket passiveSocket = null;
-	Socket activeSocket = null;
-	Socket data = null;
-	OutputStream dataChannel = null;
+	private int authorized = -1; // =1 si Sam =0 si anonymous
+	private int typeOfDataTransfer = 0; // =0 byte transfer =1 UTF8 transfer
+	private Socket socketClient = null;
+	private Node currentNode = null;
+	private ServerSocket passiveSocket = null;
+	private Socket activeSocket = null;
+	private Socket data = null;
+	private OutputStream dataChannel = null;
 
 
 	//Constructor
@@ -50,12 +51,14 @@ public class FileGestion{
     		BufferedReader input = new BufferedReader(new InputStreamReader(inStream));
       		String inString = new String();
       		String path = new String();
+      		Boolean isClosed = false;
+      		Boolean isChanged = false;
 
 	    while(true){
 			while((inString = input.readLine())== null){}// pour pouvoir attendre la commande et pas recevoir un null et avoir une exception
 			System.out.println("boucle du menu FileGestion");
 
-			System.out.println("Commande recue" + inString);
+			System.out.println("Commande recue " + inString);
 
 			/* --------- PWD -----------*/
 			if(inString.contains("PWD")){
@@ -69,31 +72,43 @@ public class FileGestion{
 			/* --------- LIST -----------*/
 			}else if(inString.contains("LIST")){
 				System.out.println("ici");
+				if(dataChannel == null){
+					outStream.write("426 Connection closed; transfer aborted\r\n".getBytes());
+					 
+				}else{
+					//outStream.write("213 list comes:\r\n".getBytes());
+					int sizeOfCurrentNode = currentNode.getSizeContent();
+					String[] contentOfCurrentNode = new String[sizeOfCurrentNode];
+					String toSend = null;
+					try{
+						contentOfCurrentNode = currentNode.getDirectoryContent();
+					}catch(NodeException e){
+						contentOfCurrentNode = null;
+					}
+					outStream.write("125 Data connection opened\r\n".getBytes());
+					for(int i = 0; i<sizeOfCurrentNode; i++){
+						toSend = contentOfCurrentNode[i] + "\r\n";// regarder MLSD facon d'envoyer les truc
+						dataChannel.write(toSend.getBytes());
+					}
+					//outStream.write("226 entire directory was successfully transmitted\r\n".getBytes());
+					//ligne suivante absolument nécessaire!!!!!!!!!
+					try{
+						dataChannel.close();
+						data.close();
+					}catch(IOException e){
+						e.printStackTrace();
+					}
+					
+					outStream.write("226 entire directory was successfully transmitted\r\n".getBytes());
 
-				//outStream.write("213 list comes:\r\n".getBytes());
-				int sizeOfCurrentNode = currentNode.getSizeContent();
-				String[] contentOfCurrentNode = new String[sizeOfCurrentNode];
-				String toSend = null;
-				try{
-					contentOfCurrentNode = currentNode.getDirectoryContent();
-				}catch(NodeException e){
-					contentOfCurrentNode = null;
+					
+
+					//décommenter ligne suivante pour test fin d'envoi
+
+					System.out.println("Content must be sent to Client");
 				}
-				outStream.write("125 Data connection opened\r\n".getBytes());
-				for(int i = 0; i<sizeOfCurrentNode; i++){
-					toSend = contentOfCurrentNode[i] + "\r\n";// regarder MLSD facon d'envoyer les truc
-					dataChannel.write(toSend.getBytes());
-				}
-				//outStream.write("226 entire directory was successfully transmitted\r\n".getBytes());
-				//ligne suivante absolument nécessaire!!!!!!!!!
-				dataChannel.close();
-				outStream.write("226 entire directory was successfully transmitted\r\n".getBytes());
 
-				//data.close();
-
-				//décommenter ligne suivante pour test fin d'envoi
-
-				System.out.println("Content must be sent to Client");
+				
 
 
 
@@ -116,14 +131,12 @@ public class FileGestion{
 
 				passiveSocket = new ServerSocket(port);
 				try{
-
-					Socket data = passiveSocket.accept();
-
+					data = passiveSocket.accept();
 				  	dataChannel = data.getOutputStream();
 					//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
 				}catch(IOException e){
 					outStream.write("425	Can't open data connection.\r\n".getBytes());
-				  e.printStackTrace();
+				  	e.printStackTrace();
 				}
 
 	        /* --------- EPSV -----------*/
@@ -135,27 +148,25 @@ public class FileGestion{
 	      		InetAddress addressIP = socketClient.getLocalAddress();
 	      		InetAddress hostId = addressIP.getLocalHost();
 	      		String host = hostId.getHostAddress();
-					int port = firstnum*256+secondnum;
-					host = host.replace(".",",");
+				int port = firstnum*256+secondnum;
+				host = host.replace(".",",");
 
-					String message = new String("229 Starting Extended Passive Mode (|||"+port+"|)\r\n");
-   					outStream.write(message.getBytes());
-					//outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
+				String message = new String("229 Starting Extended Passive Mode (|||"+port+"|)\r\n");
+				
+				//outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
 
-					System.out.println("Instanciation nouveau ServerSocket pour dataChannel");
-					passiveSocket = new ServerSocket(port);
-					
-					try{
-						Socket data = passiveSocket.accept();
-
-
-					  	dataChannel = data.getOutputStream();
-					  	System.out.println("Client connecté à la dataChannel");
-						//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
-					}catch(IOException e){
-						outStream.write("425	Can't open data connection.\r\n".getBytes());
-					  	e.printStackTrace();
-					}
+				System.out.println("Instanciation nouveau ServerSocket pour dataChannel");
+				passiveSocket = new ServerSocket(port, 1, addressIP);
+				outStream.write(message.getBytes());
+				try{
+					data = passiveSocket.accept();
+				  	dataChannel = data.getOutputStream();
+				  	System.out.println("Client connecté à la dataChannel");
+					//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+				}catch(IOException e){
+					outStream.write("425	Can't open data connection.\r\n".getBytes());
+				  	e.printStackTrace();
+				}
 
 	        }else if(inString.contains("EPRT")){
 				int n2 = inString.length() - 7 ;
@@ -230,39 +241,48 @@ System.out.println(p1+"  "+p2);
 			/* --------- CWD -----------*/
 			}else if(inString.contains("CWD")){
 
-				path = inString.substring(4);
-				List<Node> nextnodes = currentNode.getNextNodes();
-				Object[] array = nextnodes.toArray();
-				Node n = null;
-				int size = nextnodes.size();
-
-				for(int i = 0; i<size ; i++){
-					n = (Node) array[i];
-					System.out.println(n.getName());
-					System.out.println(n.getPath());
-					System.out.println(currentNode.getName());
-					System.out.println(currentNode.getPath());
-
-					//attention plus tard changer inString par path
-					if(inString.contains(n.getName()) || inString.contains(n.getPath())){
-						this.currentNode = n;
-						str = "250 directory changed to " + currentNode.getPath();
-						outStream.write(str.getBytes());
-					}else if(inString.contains(currentNode.getPath()) || inString.contains(currentNode.getName())){
-						str = "250 directory changed to " + currentNode.getPath();
-						outStream.write(str.getBytes());
+				if(inString.length() <5 || inString.length() < 4){
+					outStream.write("501 error in arguments\r\n".getBytes());
+				}else{
+					path = inString.substring(4);
+					List<Node> nextnodes = currentNode.getNextNodes();
+					if(nextnodes == null){
+						outStream.write("550 Requested action not taken. Directory unavailable from here\r\n".getBytes());
 					}else{
-						outStream.write("501 error in arguments".getBytes());
+						Object[] array = nextnodes.toArray();
+						Node n = null;
+						int size = nextnodes.size();
+						String message = null;
+
+						for(int i = 0; i<size ; i++){
+							n = (Node) array[i];
+							//attention plus tard changer inString par path
+							if(path.contains(n.getName()) || path.contains(n.getPath())){
+								this.currentNode = n;
+								str = "250 directory changed to " + currentNode.getPath() + "\r\n";
+								outStream.write(str.getBytes());
+								isChanged = true;
+								break;
+							}else if(path.contains("\\") || path.contains(currentNode.getName())){
+								str = "250 directory changed to " + currentNode.getPath() + "\r\n";
+								outStream.write(str.getBytes());
+								isChanged = true;
+								break;
+							}
+						}
+						if(isChanged != true){
+							outStream.write("501 error in arguments\r\n".getBytes());
+						}
 					}
-
-
+					
 				}
 
 						/* ---------CDUP-------------*/
 			}else if(inString.contains("CDUP")){
 				try{
 					currentNode = currentNode.getParent();
-					outStream.write("250 okay \r\n".getBytes());
+					str = "250 okay new current directory "+currentNode.getName()+"\r\n";
+					outStream.write(str.getBytes());
 				}catch(Exception e){
 					outStream.write("550 not Okay \r\n".getBytes());
 				}
@@ -280,16 +300,63 @@ System.out.println(p1+"  "+p2);
 			/* --------- TYPE -----------*/
 			}else if( inString.contains("TYPE")){
              	if(inString.contains("I")){
+             		typeOfDataTransfer = 0;
                 	outStream.write("200 Type set to I\r\n".getBytes());
               	}
               	if(inString.contains("A")){
+              		typeOfDataTransfer = 1;
                 	outStream.write("200 Type set to A\r\n".getBytes());
               	}
 
-            /* --------- DEFAULT -----------*/
+            /* --------- RETR -----------*/
             }else if(inString.contains("RETR")){
+            	if(dataChannel == null){
+            		outStream.write("426 Connection closed; transfer aborted\r\n".getBytes());
+            		isClosed = true;
+            	}else{
+            		isClosed = false;
+            		if(inString.length() < 5 || inString.length() < 4){
+            		outStream.write("501 error in arguments\r\n".getBytes());
+	            	}else{
+	            		path = inString.substring(4);
+	            		List<Node> nextnodes = currentNode.getNextNodes();
+						Object[] array = nextnodes.toArray();
+						Node n = null;
+						int size = nextnodes.size();
+						byte[] dataToSend = null;
 
-
+						for(int i = 0; i<size ; i++){
+							n = (Node) array[i];
+							//attention plus tard changer inString par path
+							if(path.contains(n.getName()) || path.contains(n.getPath())){
+								dataToSend = n.getData();
+								
+								try{
+									dataChannel.write(dataToSend);
+									dataChannel.close();
+									isClosed = true;
+									outStream.write("226 the entire file was successfully written\r\n".getBytes());
+								}catch(IOException e){
+									e.printStackTrace();
+								}
+								
+								
+								
+								//outStream.write(str.getBytes());
+								break;
+							}
+								
+							}
+						if(isClosed != true){
+							try{
+								outStream.write("501 error in arguments\r\n".getBytes());
+							}catch(IOException e){
+								e.printStackTrace();
+							}
+							
+						}
+					}
+	            }
             }else{
 				outStream.write("502 command not implemented\r\n".getBytes());
 
