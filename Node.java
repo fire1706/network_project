@@ -32,7 +32,7 @@ public class Node{
 		Date d = new Date();
 		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
 		this.date = simpledateformat.format(d);
-		this.dataFormalism = "-drwx-xr-x-\t2 user\tgroup\t \t" + this.date +"\t"+this.name;
+		this.dataFormalism = "drwx-xr-x-\t2 user\tgroup\t \t" + this.date +"\t"+this.name;
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n"	;
 
 	}
@@ -52,7 +52,7 @@ public class Node{
 		Date d = new Date();
 		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
 		this.date = simpledateformat.format(d);
-		this.dataFormalism = "-drwx-r--r--\t2 user\tgroup\t \t" + this.date +"\t"+ this.name;	
+		this.dataFormalism = "drwx-xr-x-\t2 user\tgroup\t \t" + this.date +"\t"+ this.name;	
 		//Debug version
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
 	}
@@ -161,6 +161,10 @@ public class Node{
 			}
 			return str;
 		}
+	}
+
+	public void remove(){
+
 	}
 
 
