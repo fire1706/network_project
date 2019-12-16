@@ -21,7 +21,7 @@ import java.io.*;
 import java.util.*;
 
 public class FileGestion{
-	private int authorized = -1; // =1 si Sam =0 si anonymous
+	private int authorized = -1; //si Sam =1   si anonymous = 0
 	private int typeOfDataTransfer = 0; // =0 byte transfer =1 UTF8 transfer
 	private Socket socketClient = null;
 	private Node currentNode = null;
