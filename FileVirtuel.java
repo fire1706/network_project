@@ -73,12 +73,6 @@ public class FileVirtuel{
 		}
 
 
-
-
-
-
-
-
 	}
 
 	public String[] list(Node n){
