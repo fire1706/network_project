@@ -260,12 +260,12 @@ System.out.println(p1+"  "+p2);
 							n = (Node) array[i];
 							//attention plus tard changer inString par path
 							if(path.contains(n.getName()) || path.contains(n.getPath())){
-								this.currentNode = n;
+								currentNode = n;
 								str = "250 directory changed to " + currentNode.getPath() + "\r\n";
 								outStream.write(str.getBytes());
 								isChanged = true;
 								break;
-							}else if(path.contains("\\") || path.contains(currentNode.getName())){
+							}else if(path.contains("/") || path.contains(currentNode.getName())){
 								str = "250 directory changed to " + currentNode.getPath() + "\r\n";
 								outStream.write(str.getBytes());
 								isChanged = true;
@@ -293,13 +293,97 @@ System.out.println(p1+"  "+p2);
 				/* ---------RMD-------------*/
 			}else if(inString.startsWith("RMD")){
 				try{//A terminer ca va pas du tout
-					outStream.write("250 okay \r\n".getBytes());
+					if(inString.length() < 4){
+						outStream.write("501 error in arguments\r\n".getBytes());
+					}else{
+						path = inString.substring(4);
+						List<Node> nextnodes = currentNode.getNextNodes();
+						Object[] array = nextnodes.toArray();
+						Node n = null;
+						int size = nextnodes.size();
+						boolean isRemoved = false;
+						for(int i = 0; i<size; i++){
+							n = (Node) array[i];
+							if(path.contains(n.getName()) || path.contains(n.getPath())){
+								isRemoved = currentNode.remove(n);
+							}
+						}
+						if(isRemoved == true){
+							outStream.write("250 directory was successfully removed\r\n".getBytes());
+						}else{
+							outStream.write("550 not Okay \r\n".getBytes());
+						}
+
+
+					}
+				}catch(Exception e){
+					outStream.write("550 not Okay \r\n".getBytes());
+				}
+			/* --------- DELE -----------*/	
+			}else if(inString.startsWith("DELE")){
+				try{//A terminer ca va pas du tout
+					if(inString.length() < 5){
+						outStream.write("501 error in arguments\r\n".getBytes());
+					}else{
+						path = inString.substring(5);
+						List<Node> nextnodes = currentNode.getNextNodes();
+						Object[] array = nextnodes.toArray();
+						Node n = null;
+						int size = nextnodes.size();
+						boolean isRemoved = false;
+						for(int i = 0; i<size; i++){
+							n = (Node) array[i];
+							if(path.contains(n.getName()) || path.contains(n.getPath())){
+								isRemoved = currentNode.remove(n);
+							}
+						}
+						if(isRemoved == true){
+							outStream.write("250 directory was successfully removed\r\n".getBytes());
+						}else{
+							outStream.write("550 not Okay \r\n".getBytes());
+						}
+
+
+					}
 				}catch(Exception e){
 					outStream.write("550 not Okay \r\n".getBytes());
 				}
 
-
 			/* --------- TYPE -----------*/
+			}else if(inString.startsWith("MKD")){
+				if(inString.length() < 4){
+						outStream.write("501 error in arguments\r\n".getBytes());
+					}else{
+						path = inString.substring(4);
+						List<Node> nextnodes = currentNode.getNextNodes();
+						Object[] array = nextnodes.toArray();
+						Node n = null;
+						int size = nextnodes.size();
+						boolean isPresent = false;
+
+						for(int i = 0; i<size; i++){
+							n = (Node) array[i];
+							if(path.contains(n.getName()) || path.contains(n.getPath())){
+								isPresent = true;
+							}
+						}
+
+						if(isPresent == false){
+							try{
+								Node newNode = new Node(path, currentNode);
+								currentNode.addNextNode(newNode);
+								str = "257 " + currentNode.getPath()+"\r\n";
+								outStream.write(str.getBytes());
+							}catch(NodeException e){
+								e.printStackTrace();
+								outStream.write("550 creation failed\r\n".getBytes());
+							}
+							
+						}else{
+							outStream.write("550 creation failed\r\n".getBytes());
+						}
+						
+					}
 			}else if( inString.startsWith("TYPE")){
              	if(inString.contains("I")){
              		typeOfDataTransfer = 0;
@@ -378,33 +462,54 @@ System.out.println(p1+"  "+p2);
 						//rajouter lecture UTF8
 						if(typeOfDataTransfer == 1){
 							dataChannelINReader = new BufferedReader(new InputStreamReader(dataChannelIN, "UTF-8"));
+
+							while((reiceived = dataChannelINReader.read()) != -1){//read until the EOF
+								dataToReceive = (byte) reiceived;
+								receiveBytes.add(dataToReceive);
+							}
+
+							Object[] array = receiveBytes.toArray();
+							size = receiveBytes.size();
+							byte[] constructor = new byte[size];
+							for(int i =0; i<size; i++){
+								constructor[i] = (byte) array[i];
+							}
+							try{
+								Node newNode = new Node(path, constructor, currentNode);
+								currentNode.addNextNode(newNode);
+							}catch(NodeException e){
+								e.printStackTrace();
+								System.out.println("Problem with creation of new node to store the data reiceived");
+							}
+							outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
 						}else{
-							dataChannelINReader = new BufferedReader(new InputStreamReader(dataChannelIN));
+
+							while((reiceived = dataChannelIN.read()) != -1){//read until the EOF
+								dataToReceive = (byte) reiceived;
+								receiveBytes.add(dataToReceive);
+							}
+
+							Object[] array = receiveBytes.toArray();
+							size = receiveBytes.size();
+							byte[] constructor = new byte[size];
+							for(int i =0; i<size; i++){
+								constructor[i] = (byte) array[i];
+							}
+							try{
+								Node newNode = new Node(path, constructor, currentNode);
+								currentNode.addNextNode(newNode);
+							}catch(NodeException e){
+								e.printStackTrace();
+								System.out.println("Problem with creation of new node to store the data reiceived");
+							}
+							outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
+							
+
+							}//end else 2
 						}
 
 
-						while((reiceived = dataChannelINReader.read()) != -1){//read until the EOF
-							dataToReceive = (byte) reiceived;
-							receiveBytes.add(dataToReceive);
-						}
-
-						Object[] array = receiveBytes.toArray();
-						size = receiveBytes.size();
-						byte[] constructor = new byte[size];
-						for(int i =0; i<size; i++){
-							constructor[i] = (byte) array[i];
-						}
-						try{
-							Node newNode = new Node(path, constructor, currentNode);
-							currentNode.addNextNode(newNode);
-						}catch(NodeException e){
-							e.printStackTrace();
-							System.out.println("Problem with creation of new node to store the data reiceived");
-						}
-						outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
 						
-
-						}//end else 2
 					}//end else1
 	            }else{
 				outStream.write("502 command not implemented\r\n".getBytes());
