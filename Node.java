@@ -163,7 +163,13 @@ public class Node{
 		}
 	}
 
-	public void remove(){
+	public boolean remove(Node n){
+		if(nextNodes.contains(n) == true){
+			return nextNodes.remove(n);
+		}else{
+			System.out.println("No such node in this directory");
+			return nextNodes.remove(n);
+		}
 
 	}
 
