@@ -363,51 +363,50 @@ System.out.println(p1+"  "+p2);
             	if(dataChannel == null){
             		outStream.write("426 Connection closed; transfer aborted\r\n".getBytes());
             		isClosed = true;
-            	}else{
+            	}else{//else1
             		isClosed = false;
             		if(inString.length() < 5){
-            		outStream.write("501 error in arguments\r\n".getBytes());
-	            	}else{
+            			outStream.write("501 error in arguments\r\n".getBytes());
+	            	}else{//else 2
 	            		path = inString.substring(4);
-	            		List<Node> nextnodes = currentNode.getNextNodes();
-						Object[] array = nextnodes.toArray();
-						Node n = null;
-						int size = nextnodes.size();
-						byte[] dataToSend = null;
+	            		ArrayList<Byte> receiveBytes = new ArrayList<Byte>();
+						int size = 0;
+						Byte dataToReceive ;
+						BufferedReader dataChannelINReader = null;
+						int reiceived = -1;
 
-						for(int i = 0; i<size ; i++){
-							n = (Node) array[i];
-							//attention plus tard changer inString par path
-							if(path.contains(n.getName()) || path.contains(n.getPath())){
-								dataToSend = n.getData();
-								
-								try{
-									dataChannel.write(dataToSend);
-									dataChannel.close();
-									isClosed = true;
-									outStream.write("226 the entire file was successfully written\r\n".getBytes());
-								}catch(IOException e){
-									e.printStackTrace();
-								}
-								
-								
-								
-								//outStream.write(str.getBytes());
-								break;
-							}
-								
-							}
-						if(isClosed != true){
-							try{
-								outStream.write("501 error in arguments\r\n".getBytes());
-							}catch(IOException e){
-								e.printStackTrace();
-							}
-							
+						//rajouter lecture UTF8
+						if(typeOfDataTransfer == 1){
+							dataChannelINReader = new BufferedReader(new InputStreamReader(dataChannelIN, "UTF-8"));
+						}else{
+							dataChannelINReader = new BufferedReader(new InputStreamReader(dataChannelIN));
 						}
-					}
-	            }
-            }else{
+
+
+						while((reiceived = dataChannelINReader.read()) != -1){//read until the EOF
+							dataToReceive = (byte) reiceived;
+							receiveBytes.add(dataToReceive);
+						}
+
+						Object[] array = receiveBytes.toArray();
+						size = receiveBytes.size();
+						byte[] constructor = new byte[size];
+						for(int i =0; i<size; i++){
+							constructor[i] = (byte) array[i];
+						}
+						try{
+							Node newNode = new Node(path, constructor, currentNode);
+							currentNode.addNextNode(newNode);
+						}catch(NodeException e){
+							e.printStackTrace();
+							System.out.println("Problem with creation of new node to store the data reiceived");
+						}
+						outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
+						
+
+						}//end else 2
+					}//end else1
+	            }else{
 				outStream.write("502 command not implemented\r\n".getBytes());
 
 			}
