@@ -57,9 +57,10 @@ public class FileGestion{
       		Boolean isChanged = false;
 
 	    while(true){
-			while((inString = input.readLine())== null){}// pour pouvoir attendre la commande et pas recevoir un null et avoir une exception
-			System.out.println("boucle du menu FileGestion");
-
+	    	System.out.println("boucle du menu FileGestion");
+			//while((inString = input.readLine())== null){}// pour pouvoir attendre la commande et pas recevoir un null et avoir une exception
+			
+	    	inString = input.readLine();
 			System.out.println("Commande recue " + inString);
 
 			/* --------- PWD -----------*/
@@ -522,12 +523,39 @@ System.out.println(p1+"  "+p2);
 
 							}//end else 2
 						}
-
-
 						
 					}//end else1
+	            }else if(inString.equals("QUIT")){
+	            	outStream.write("221 bye\r\n".getBytes());
+
+	            	try{
+		            	outStream.close();
+		            	inStream.close();
+		            	if(socketClient != null){
+		            		socketClient.close();
+		            	}
+		            	if(dataChannel != null){
+		            		dataChannel.close();
+		            	}
+		            	if(dataChannelIN != null){
+		            		dataChannelIN.close();
+		            	}
+		            	if(passiveSocket != null){
+		            		passiveSocket.close();
+		            	}
+		            	if(activeSocket != null){
+		            		activeSocket.close();
+		            	}
+		            	if(data!= null){
+		            		data.close();
+		            	}
+	            	}catch(IOException e){
+	            		e.printStackTrace();
+	            	}
+	            	break;
+
 	            }else{
-				outStream.write("502 command not implemented\r\n".getBytes());
+					outStream.write("502 command not implemented\r\n".getBytes());
 
 			}// END of the commands
 
