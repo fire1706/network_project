@@ -1,3 +1,5 @@
+//Authors: Bastin Thomas & Dachet Victor
+
 import java.util.*;
 import java.lang.*;
 
@@ -7,14 +9,14 @@ public class FileVirtuel{
 	
 	public FileVirtuel(){
 		try{
-			root = new Node("/", true);
-			Node privateFolder = new Node("private", root);
+			root = new Node("/", true, 1);
+			Node privateFolder = new Node("private", root, 1);
 			root.addNextNode(privateFolder);
 
-			Node secret = new Node("secret.txt", "UPUPDOWNDOWNLEFTRIGHTLEFTRIGHTBASTART".getBytes(), privateFolder);
+			Node secret = new Node("secret.txt", "UPUPDOWNDOWNLEFTRIGHTLEFTRIGHTBASTART".getBytes(), privateFolder, 1);
 			privateFolder.addNextNode(secret);
 
-			Node mytext = new Node("mytext.txt", "Irasshaimase".getBytes(), root);
+			Node mytext = new Node("mytext.txt", "Irasshaimase".getBytes(), root, 0);
 			root.addNextNode(mytext);
 
 			byte[] myImg = {66,  77,  70,  1,  0,  0,    0,   0,   0,   0,  62,   0,   0,  0,   40,   0,
@@ -41,7 +43,7 @@ public class FileVirtuel{
                         
         	};
 
-			Node myimage = new Node("myimage.bmp", myImg, root);
+			Node myimage = new Node("myimage.bmp", myImg, root, 0);
 			root.addNextNode(myimage);
 
 			System.out.println(myimage.getPath());
