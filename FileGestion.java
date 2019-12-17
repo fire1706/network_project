@@ -30,6 +30,7 @@ public class FileGestion{
 	private Socket data = null;
 	private OutputStream dataChannel = null;
 	private InputStream dataChannelIN = null;
+	private InetAddress hostId = null;
 
 
 	//Constructor
@@ -117,8 +118,7 @@ public class FileGestion{
 				int secondnum = randNumber.nextInt(256);
 
 				InetAddress addressIP = socketClient.getLocalAddress();
-				InetAddress hostId = addressIP.getLocalHost();
-				String host = hostId.getHostAddress();
+				String host = InetAddress.getLocalHost().getHostAddress();
 				int port = firstnum*256+secondnum;
 				host = host.replace(".",",");
 
@@ -144,8 +144,7 @@ public class FileGestion{
 	      		int secondnum = randNumber.nextInt(256);
 
 	      		InetAddress addressIP = socketClient.getLocalAddress();
-	      		InetAddress hostId = addressIP.getLocalHost();
-	      		String host = hostId.getHostAddress();
+	      		String host = InetAddress.getLocalHost().getHostAddress();
 				int port = firstnum*256+secondnum;
 				host = host.replace(".",",");
 
@@ -260,12 +259,23 @@ System.out.println(p1+"  "+p2);
 							n = (Node) array[i];
 							//attention plus tard changer inString par path
 							if(path.contains(n.getName()) || path.contains(n.getPath())){
-								currentNode = n;
-								str = "250 directory changed to " + currentNode.getPath() + "\r\n";
-								outStream.write(str.getBytes());
-								isChanged = true;
-								break;
-							}else if(path.contains("/") || path.contains(currentNode.getName())){
+								if(n.getAuthorized() == 0){
+									currentNode = n;
+									str = "250 directory changed to " + currentNode.getPath() + "\r\n";
+									outStream.write(str.getBytes());
+									isChanged = true;
+									break;
+								}else if(n.getAuthorized() == 1 && n.getAuthorized() == authorized){
+									currentNode = n;
+									str = "250 directory changed to " + currentNode.getPath() + "\r\n";
+									outStream.write(str.getBytes());
+									isChanged = true;
+									break;
+								}else{
+									outStream.write("550 No access to this file/directory\r\n".getBytes());
+								}
+								
+							}else if(path.contains(currentNode.getName()) || path.contains(currentNode.getName())){
 								str = "250 directory changed to " + currentNode.getPath() + "\r\n";
 								outStream.write(str.getBytes());
 								isChanged = true;
@@ -370,7 +380,7 @@ System.out.println(p1+"  "+p2);
 
 						if(isPresent == false){
 							try{
-								Node newNode = new Node(path, currentNode);
+								Node newNode = new Node(path, currentNode, 0);
 								currentNode.addNextNode(newNode);
 								str = "257 " + currentNode.getPath()+"\r\n";
 								outStream.write(str.getBytes());
@@ -475,7 +485,7 @@ System.out.println(p1+"  "+p2);
 								constructor[i] = (byte) array[i];
 							}
 							try{
-								Node newNode = new Node(path, constructor, currentNode);
+								Node newNode = new Node(path, constructor, currentNode, 0);
 								currentNode.addNextNode(newNode);
 							}catch(NodeException e){
 								e.printStackTrace();
@@ -496,7 +506,7 @@ System.out.println(p1+"  "+p2);
 								constructor[i] = (byte) array[i];
 							}
 							try{
-								Node newNode = new Node(path, constructor, currentNode);
+								Node newNode = new Node(path, constructor, currentNode, 0);
 								currentNode.addNextNode(newNode);
 							}catch(NodeException e){
 								e.printStackTrace();
