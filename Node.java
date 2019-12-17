@@ -1,3 +1,5 @@
+//Authors: Bastin Thomas & Dachet Victor
+
 import java.util.*;
 import java.lang.*;
 import java.text.*;
@@ -10,6 +12,7 @@ public class Node{
 	private boolean isDirectory = false;
 	private boolean isFile = false;
 	private boolean isRoot = false;
+	private int authorized = -1;
 	private byte[] data = null;
 	private int dataSize = 0;
 	private String date = null;
@@ -18,13 +21,13 @@ public class Node{
 	/*--------------- Constructors ---------------*/
 	Node(){}
 
-	Node(String name){
-		this.name = name;
-		this.isDirectory = true;
+	// Node(String name){
+	// 	this.name = name;
+	// 	this.isDirectory = true;
 
-	}
+	// }
 
-	Node(String name, boolean isRoot){
+	Node(String name, boolean isRoot, int authorized){
 		this.name = name;
 		this.isDirectory = true;
 		this.isRoot = isRoot;
@@ -33,12 +36,13 @@ public class Node{
 		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
 		this.date = simpledateformat.format(d);
 		this.dataFormalism = "drwx-xr-x-\t2 user\tgroup\t \t" + this.date +"\t"+this.name;
+		this.authorized = authorized;
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n"	;
 
 	}
 
 
-	Node(String name, Node parent) throws NodeException{
+	Node(String name, Node parent, int authorized) throws NodeException{
 		if(parent.isDirectory() == false)
 			throw new NodeException("parent is not a directory");
 		this.name = name;
@@ -53,12 +57,11 @@ public class Node{
 		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
 		this.date = simpledateformat.format(d);
 		this.dataFormalism = "drwx-xr-x-\t2 user\tgroup\t \t" + this.date +"\t"+ this.name;	
-		//Debug version
-		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
+		this.authorized = authorized;
 	}
 	
 
-	Node(String name, byte[] data, Node parent) throws NodeException{
+	Node(String name, byte[] data, Node parent, int authorized) throws NodeException{
 		if(parent.isDirectory() == false)
 			throw new NodeException("parent is not a directory");
 		this.name = name;
@@ -76,6 +79,7 @@ public class Node{
 		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
 		this.date = simpledateformat.format(d);
 		this.dataFormalism = "-rw-rw-rw-\t1 user\tgroup\t"+this.dataSize+"\t" + this.date +"\t"+ this.name;
+		this.authorized = authorized;
 
 	}
 
@@ -109,6 +113,10 @@ public class Node{
 		return isRoot;
 	}
 
+	public int getAuthorized(){
+		return authorized;
+	}
+
 	public byte[] getData(){
 		return data;
 	}
@@ -121,9 +129,7 @@ public class Node{
 		this.dataSize = this.dataSize + nextNode.getDataSize();
 	}
 
-	public boolean removeNode(Node removeNode){
-		return nextNodes.remove((Node) removeNode);
-	}
+	
 
 	
 
@@ -163,7 +169,7 @@ public class Node{
 		}
 	}
 
-	public boolean remove(Node n){
+	public synchronized boolean remove(Node n){
 		if(nextNodes.contains(n) == true){
 			return nextNodes.remove(n);
 		}else{
@@ -172,10 +178,6 @@ public class Node{
 		}
 
 	}
-
-
-
-
 
 
 
