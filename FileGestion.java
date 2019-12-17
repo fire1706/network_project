@@ -78,7 +78,6 @@ public class FileGestion{
 					outStream.write("426 Connection closed; transfer aborted\r\n".getBytes());
 					 
 				}else{
-					//outStream.write("213 list comes:\r\n".getBytes());
 					int sizeOfCurrentNode = currentNode.getSizeContent();
 					String[] contentOfCurrentNode = new String[sizeOfCurrentNode];
 					String toSend = null;
@@ -332,7 +331,7 @@ System.out.println(p1+"  "+p2);
 			/* --------- DELE -----------*/	
 			}else if(inString.startsWith("DELE")){
 				try{//A terminer ca va pas du tout
-					if(inString.length() < 5){
+					if(inString.length() < 6){
 						outStream.write("501 error in arguments\r\n".getBytes());
 					}else{
 						path = inString.substring(5);
@@ -411,10 +410,10 @@ System.out.println(p1+"  "+p2);
             		isClosed = true;
             	}else{
             		isClosed = false;
-            		if(inString.length() < 5){
+            		if(inString.length() < 6){
             		outStream.write("501 error in arguments\r\n".getBytes());
 	            	}else{
-	            		path = inString.substring(4);
+	            		path = inString.substring(5);
 	            		List<Node> nextnodes = currentNode.getNextNodes();
 						Object[] array = nextnodes.toArray();
 						Node n = null;
@@ -459,10 +458,10 @@ System.out.println(p1+"  "+p2);
             		isClosed = true;
             	}else{//else1
             		isClosed = false;
-            		if(inString.length() < 5){
+            		if(inString.length() < 6){
             			outStream.write("501 error in arguments\r\n".getBytes());
 	            	}else{//else 2
-	            		path = inString.substring(4);
+	            		path = inString.substring(5);
 	            		ArrayList<Byte> receiveBytes = new ArrayList<Byte>();
 						int size = 0;
 						Byte dataToReceive ;
@@ -487,9 +486,12 @@ System.out.println(p1+"  "+p2);
 							try{
 								Node newNode = new Node(path, constructor, currentNode, 0);
 								currentNode.addNextNode(newNode);
+								dataChannelINReader.close();
 							}catch(NodeException e){
 								e.printStackTrace();
 								System.out.println("Problem with creation of new node to store the data reiceived");
+							}catch(IOException e){
+								e.printStackTrace();
 							}
 							outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
 						}else{
@@ -508,9 +510,12 @@ System.out.println(p1+"  "+p2);
 							try{
 								Node newNode = new Node(path, constructor, currentNode, 0);
 								currentNode.addNextNode(newNode);
+								dataChannelIN.close();
 							}catch(NodeException e){
 								e.printStackTrace();
 								System.out.println("Problem with creation of new node to store the data reiceived");
+							}catch(IOException e){
+								e.printStackTrace();
 							}
 							outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
 							
@@ -524,18 +529,24 @@ System.out.println(p1+"  "+p2);
 	            }else{
 				outStream.write("502 command not implemented\r\n".getBytes());
 
-			}
+			}// END of the commands
 
-      	}
 
+      	}//END of While
 
 		}catch(UnknownHostException e){
 			e.printStackTrace();
 		}catch(IOException e){
 			e.printStackTrace();
-		}
+		}catch(SecurityException e){
+			e.printStackTrace();
+		}catch(IllegalArgumentException e){
+			e.printStackTrace();
+		}catch(NullPointerException e){
+			e.printStackTrace();
+		}//END of try and catch
 
 
 
-	}
-}
+	}//END of menu
+}//END of class
