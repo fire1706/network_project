@@ -57,14 +57,19 @@ public class FTPServer{
 
         // We launch a new thread
         System.out.println("New connection incoming");
+        
         exe.execute(new Management(managementCommandSocket, file_virtuel));
+        
+        
       }// end while
+
 
     }catch(IOException e){
       System.out.println(e.getMessage());
     }// end try&catch
-  }//end constructor
-}// end function
+    exe.shutdown();
+  }//end main function
+}// end class
 
 
 
