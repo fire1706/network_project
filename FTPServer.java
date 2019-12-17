@@ -49,7 +49,7 @@ public class FTPServer{
       while(true){
         // We accpet the ServerSocket
         managementCommandSocket = commandSocket.accept();
-        managementCommandSocket.setSoTimeout(728242); // timeout define to wait x second , if it is reach the Socket closed
+        managementCommandSocket.setSoTimeout(180000); // timeout define to wait x second , if it is reach the Socket closed
 
 
         // We say that the server is ready to get command and data
