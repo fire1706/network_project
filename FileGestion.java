@@ -55,6 +55,8 @@ public class FileGestion{
       		String path = new String();
       		Boolean isClosed = false;
       		Boolean isChanged = false;
+      		boolean previousRNFR = false;
+      		Node nodeToChangeName = null;
 
 	    while(true){
 	    	System.out.println("boucle du menu FileGestion");
@@ -73,7 +75,7 @@ public class FileGestion{
 				outStream.write("502 command not supported\r\n".getBytes());
 
 			/* --------- LIST -----------*/
-			}else if(inString.contains("LIST")){
+			}else if(inString.equals("LIST")){
 				System.out.println("ici");
 				if(dataChannel == null || data == null){
 					outStream.write("426 Connection closed; transfer aborted\r\n".getBytes());
@@ -168,26 +170,42 @@ public class FileGestion{
 
 	        }else if(inString.startsWith("EPRT")){
 	        	// EPRT format: EPRT |2|::1|50764|
-				int n2 = inString.length() - 7 ;
-				int n1 = inString.length() - 6 ;
-				int n3 = inString.length() -1 ;
-				String getAddr = inString.substring(8,n2);
-				System.out.println(inString);
-				System.out.println(getAddr);
-				String portS = inString.substring(n1,n3);
-				System.out.println(portS);
-				int port =  Integer.valueOf(portS);
-				outStream.write("200 \r\n".getBytes());
-				try{
-					//outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
-					data = new Socket(getAddr,port);
-					dataChannel = data.getOutputStream();
-					dataChannelIN = data.getInputStream();
-									//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
-	        	}catch(IOException e){
-					outStream.write("425	Can't open data connection.\r\n".getBytes());
-	        		e.printStackTrace();
+	        	if(inString.length() < 6){
+	        		outStream.write("501 error in arguments\r\n".getBytes());
+	        	}else{
+	        		//str = inString.substring(5);
+	        		//to continue
+	        		str = inString.replace("|",",");//due to function split which splits all chararcter pf the string with "|"
+	        		String[] tabstr = str.split(",");
+	        		if(tabstr.length != 4){
+	        			outStream.write("501 error in arguments\r\n".getBytes());
+	        		}else{
+		        		int n2 = inString.length() - 7 ;
+						int n1 = inString.length() - 6 ;
+						int n3 = inString.length() -1 ;
+						//String getAddr = inString.substring(8,n2);
+						String getAddr = tabstr[2];
+						System.out.println(inString);
+						System.out.println(getAddr);
+						//String portS = inString.substring(n1,n3);
+						String portS = tabstr[3];
+						System.out.println(portS);
+						int port =  Integer.valueOf(portS);
+						
+						try{
+							//outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
+							data = new Socket(getAddr,port);
+							dataChannel = data.getOutputStream();
+							dataChannelIN = data.getInputStream();
+							outStream.write("200 active extended\r\n".getBytes());				//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+			        	}catch(IOException e){
+							outStream.write("425	Can't open data connection.\r\n".getBytes());
+			        		e.printStackTrace();
+			        	}
+	        		}
+		        	
 	        	}
+				
 
 
 
@@ -342,7 +360,14 @@ public class FileGestion{
 						for(int i = 0; i<size; i++){
 							n = (Node) array[i];
 							if(path.contains(n.getName()) || path.contains(n.getPath())){
-								isRemoved = currentNode.remove(n);
+								System.out.println("authorized = "+authorized);
+								System.out.println("n.getAuthorized = "+n.getAuthorized());
+								if(authorized == 0 && n.getAuthorized() == 1){
+									isRemoved = false;
+									break;
+								}else{
+									isRemoved = currentNode.remove(n);
+								}
 							}
 						}
 						if(isRemoved == true){
@@ -371,7 +396,14 @@ public class FileGestion{
 						for(int i = 0; i<size; i++){
 							n = (Node) array[i];
 							if(path.contains(n.getName()) || path.contains(n.getPath())){
-								isRemoved = currentNode.remove(n);
+								System.out.println("authorized = "+authorized);
+								System.out.println("n.getAuthorized = "+n.getAuthorized());
+								if(authorized == 0 && n.getAuthorized() == 1){
+									isRemoved = false;
+									break;
+								}else{
+									isRemoved = currentNode.remove(n);
+								}
 							}
 						}
 						if(isRemoved == true){
@@ -469,7 +501,7 @@ public class FileGestion{
 								break;
 							}
 								
-							}
+						}
 						if(isClosed != true){
 							try{
 								outStream.write("501 error in arguments\r\n".getBytes());
@@ -495,60 +527,80 @@ public class FileGestion{
 						Byte dataToReceive ;
 						BufferedReader dataChannelINReader = null;
 						int reiceived = -1;
+						
+						List<Node> nextnodes = currentNode.getNextNodes();
+						Object[] arrayNodes = nextnodes.toArray();
+						Node n = null;
+						int sizeNextnodes = nextnodes.size();
+						boolean isAlreadyThere = false;
 
-						//rajouter lecture UTF8
-						if(typeOfDataTransfer == 1){
-							dataChannelINReader = new BufferedReader(new InputStreamReader(dataChannelIN, "UTF-8"));
+						for(int i = 0; i<sizeNextnodes ; i++){
+							n = (Node) arrayNodes[i];
+							//attention plus tard changer inString par path
+							if(path.contains(n.getName()) || path.contains(n.getPath())){
+								isAlreadyThere = true;	
+							}	
+						}
 
-							while((reiceived = dataChannelINReader.read()) != -1){//read until the EOF
-								dataToReceive = (byte) reiceived;
-								receiveBytes.add(dataToReceive);
-							}
-
-							Object[] array = receiveBytes.toArray();
-							size = receiveBytes.size();
-							byte[] constructor = new byte[size];
-							for(int i =0; i<size; i++){
-								constructor[i] = (byte) array[i];
-							}
-							try{
-								Node newNode = new Node(path, constructor, currentNode, 0);
-								currentNode.addNextNode(newNode);
-								dataChannelINReader.close();
-							}catch(NodeException e){
-								e.printStackTrace();
-								System.out.println("Problem with creation of new node to store the data reiceived");
-							}catch(IOException e){
-								e.printStackTrace();
-							}
-							outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
+						if(isAlreadyThere){
+							outStream.write("553 Requested action not taken. File name not allowed.\r\n".getBytes());
 						}else{
+							//transfer of data type UTF-8
+							if(typeOfDataTransfer == 1){
+								dataChannelINReader = new BufferedReader(new InputStreamReader(dataChannelIN, "UTF-8"));
 
-							while((reiceived = dataChannelIN.read()) != -1){//read until the EOF
-								dataToReceive = (byte) reiceived;
-								receiveBytes.add(dataToReceive);
-							}
+								while((reiceived = dataChannelINReader.read()) != -1){//read until the EOF
+									dataToReceive = (byte) reiceived;
+									receiveBytes.add(dataToReceive);
+								}
 
-							Object[] array = receiveBytes.toArray();
-							size = receiveBytes.size();
-							byte[] constructor = new byte[size];
-							for(int i =0; i<size; i++){
-								constructor[i] = (byte) array[i];
-							}
-							try{
-								Node newNode = new Node(path, constructor, currentNode, 0);
-								currentNode.addNextNode(newNode);
-								dataChannelIN.close();
-							}catch(NodeException e){
-								e.printStackTrace();
-								System.out.println("Problem with creation of new node to store the data reiceived");
-							}catch(IOException e){
-								e.printStackTrace();
-							}
-							outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
-							
+								Object[] array = receiveBytes.toArray();
+								size = receiveBytes.size();
+								byte[] constructor = new byte[size];
+								for(int i =0; i<size; i++){
+									constructor[i] = (byte) array[i];
+								}
+								try{
+									Node newNode = new Node(path, constructor, currentNode, 0);
+									currentNode.addNextNode(newNode);
+									dataChannelINReader.close();
+								}catch(NodeException e){
+									e.printStackTrace();
+									System.out.println("Problem with creation of new node to store the data reiceived");
+								}catch(IOException e){
+									e.printStackTrace();
+								}
+								outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
+							}else{//type of data transfer byte
 
-							}//end else 2
+								while((reiceived = dataChannelIN.read()) != -1){//read until the EOF
+									dataToReceive = (byte) reiceived;
+									receiveBytes.add(dataToReceive);
+								}
+
+								Object[] array = receiveBytes.toArray();
+								size = receiveBytes.size();
+								byte[] constructor = new byte[size];
+								for(int i =0; i<size; i++){
+									constructor[i] = (byte) array[i];
+								}
+								try{
+									Node newNode = new Node(path, constructor, currentNode, 0);
+									currentNode.addNextNode(newNode);
+									dataChannelIN.close();
+								}catch(NodeException e){
+									e.printStackTrace();
+									System.out.println("Problem with creation of new node to store the data reiceived");
+								}catch(IOException e){
+									e.printStackTrace();
+								}
+								outStream.write("226 entire file was successfully received and stored\r\n".getBytes());
+								
+
+								}//end else 2
+						}
+
+						
 						}
 						
 					}//end else1
@@ -581,6 +633,83 @@ public class FileGestion{
 	            	}
 	            	break;
 
+	            }else if(inString.startsWith("MDTM")){//a finir!!
+	            	if(inString.length() < 6){
+	            		outStream.write("501 error in arguments\r\n".getBytes());
+	            	}else{
+	            		str = inString.substring(5);
+	            		List<Node> nextnodes = currentNode.getNextNodes();
+						Object[] array = nextnodes.toArray();
+						Node n = null;
+						int size = nextnodes.size();
+						byte[] dataToSend = null;
+						String message = null;
+						boolean isThere = false;
+
+						for(int i = 0; i<size ; i++){
+							n = (Node) array[i];
+							System.out.println("Hello there");
+							if(str.contains(n.getName()) || str.contains(n.getPath())){
+								message = "213 "+n.getDate() + "\r\n";
+								isThere = true;
+								break;
+							}	
+						}
+						if(isThere){
+							outStream.write(message.getBytes());
+						}else{
+							outStream.write("501 Syntax error in parameters or arguments\r\n".getBytes());
+						}
+	            	}
+
+	            }else if(inString.startsWith("RNFR")){
+	            	if(inString.length() < 6){
+	            		outStream.write("501 error in arguments\r\n".getBytes());
+	            	}else{
+	            		str = inString.substring(5);
+	            		List<Node> nextnodes = currentNode.getNextNodes();
+						Object[] array = nextnodes.toArray();
+						Node n = null;
+						int size = nextnodes.size();
+						byte[] dataToSend = null;
+						String message = null;
+						boolean isThere = false;
+
+
+						for(int i = 0; i<size ; i++){
+							n = (Node) array[i];
+							if(str.contains(n.getName()) || str.contains(n.getPath())){
+								message = "350 File exists, ready for destination name\r\n";
+								nodeToChangeName = n;
+								System.out.println("node to change name: "+nodeToChangeName.getName());
+								previousRNFR = true;
+								isThere = true;
+								break;
+							}	
+						}
+						if(isThere){
+							outStream.write(message.getBytes());
+						}else{
+							outStream.write("550 Requested action not taken. File unavailable\r\n".getBytes());
+						}
+	            	}
+
+	            }else if(inString.startsWith("RNTO")){
+	            	if(inString.length() < 6){
+	            		outStream.write("501 error in arguments\r\n".getBytes());
+	            	}else{
+	            		str = inString.substring(5);
+	            		System.out.println(str);
+	            		if(nodeToChangeName != null && previousRNFR == true){
+	            			System.out.println("node to change name: "+nodeToChangeName.getName());
+	            			isChanged = nodeToChangeName.changeName(str);
+	            		}
+	            		if(isChanged){
+	            			outStream.write("250 the file was renamed successfully\r\n".getBytes());
+	            		}else{
+	            			outStream.write("550 Requested action not taken. File unavailable\r\n".getBytes());
+	            		}
+	            	}
 	            }else{
 					outStream.write("502 command not implemented\r\n".getBytes());
 
@@ -590,15 +719,18 @@ public class FileGestion{
       	}//END of While
 
 		}catch(UnknownHostException e){
+			System.out.println("Error of host");
 			e.printStackTrace();
 		}catch(IOException e){
+			System.out.println("Problem in input and output streams");
 			e.printStackTrace();
 		}catch(SecurityException e){
 			e.printStackTrace();
 		}catch(IllegalArgumentException e){
 			e.printStackTrace();
 		}catch(NullPointerException e){
-			e.printStackTrace();
+			System.out.println("Error of reading in the inputstream");
+			//e.printStackTrace();
 		}//END of try and catch
 
 
