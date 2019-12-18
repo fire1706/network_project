@@ -75,7 +75,7 @@ public class FileGestion{
 			/* --------- LIST -----------*/
 			}else if(inString.contains("LIST")){
 				System.out.println("ici");
-				if(dataChannel == null){
+				if(dataChannel == null || data == null){
 					outStream.write("426 Connection closed; transfer aborted\r\n".getBytes());
 					 
 				}else{
@@ -167,6 +167,7 @@ public class FileGestion{
 				}
 
 	        }else if(inString.startsWith("EPRT")){
+	        	// EPRT format: EPRT |2|::1|50764|
 				int n2 = inString.length() - 7 ;
 				int n1 = inString.length() - 6 ;
 				int n3 = inString.length() -1 ;
@@ -178,8 +179,8 @@ public class FileGestion{
 				int port =  Integer.valueOf(portS);
 				outStream.write("200 \r\n".getBytes());
 				try{
-					outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
-					Socket data = new Socket(getAddr,port);
+					//outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
+					data = new Socket(getAddr,port);
 					dataChannel = data.getOutputStream();
 					dataChannelIN = data.getInputStream();
 									//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
@@ -192,31 +193,57 @@ public class FileGestion{
 
 			}else if(inString.startsWith("PORT")){
 
-				int n1 = inString.length();
-				int n2 = inString.length() - 7;
-				int n3 = 5;
-				int n4 = inString.length() - 8;
-				String getAddr = inString.substring(n3,n4);
-				getAddr = getAddr.replace(",",".");
-System.out.println(getAddr);
-				String portS = inString.substring(n2,n1);
-System.out.println(portS+"  "+portS.length());
-				int p1 = Integer.valueOf(portS.substring(0,3));
-				int p2 = Integer.valueOf(portS.substring(4,7));
-System.out.println(p1+"  "+p2);
-				int port = p1*256 +p2;
 
-				outStream.write("200 \r\n".getBytes());
-				try{
-					outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
-					Socket data = new Socket(getAddr,port);
-	        		dataChannel = data.getOutputStream();
-	        		dataChannelIN = data.getInputStream();
-					//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
-	        	}catch(IOException e){
-					outStream.write("425	Can't open data connection.\r\n".getBytes());
-	        		e.printStackTrace();
-	        	}
+				if(inString.length() < 6){
+					outStream.write("501 error in arguments\r\n".getBytes());
+				}else{
+					str = inString.substring(5);
+					String[] tabstr = str.split(",");
+		System.out.println(str);
+					if(tabstr.length != 6){
+						outStream.write("501 error in arguments\r\n".getBytes());
+					}else{
+						int p1 = Integer.valueOf(tabstr[4]);
+						int p2 = Integer.valueOf(tabstr[5]);
+						String getAddr = tabstr[0] + "." + tabstr[1] + "." + tabstr[2]+ "." + tabstr[3];
+		System.out.println(getAddr);
+		System.out.println("2 numbers "+ p1+" "+p2);
+						int port = p1*256 +p2;
+		System.out.println(port);
+
+						//outStream.write("200 \r\n".getBytes());
+						try{
+							//outStream.write("150	File status okay; about to open data connection\r\n".getBytes());
+							InetAddress adressSocketActive = InetAddress.getByName(getAddr);
+							System.out.println(adressSocketActive);
+							data = null;
+							while(data == null){
+								data = new Socket(getAddr,port);
+							}
+			        		dataChannel = data.getOutputStream();
+			        		dataChannelIN = data.getInputStream();
+			        		System.out.println(dataChannel.toString());
+			        		outStream.write("200 active\r\n".getBytes());
+							//outStream.write("225	Data connection open; no transfer in progress\r\n".getBytes());
+			        	}catch(IOException e){
+							outStream.write("425	Can't open data connection.\r\n".getBytes());
+			        		e.printStackTrace();
+			        	}catch(IllegalArgumentException e){
+			        		outStream.write("425	Can't open data connection.\r\n".getBytes());
+			        		e.printStackTrace();
+			        	}catch(SecurityException e){
+			        		outStream.write("425	Can't open data connection.\r\n".getBytes());
+			        		e.printStackTrace();
+			        	}catch(NullPointerException e){
+			        		outStream.write("425	Can't open data connection.\r\n".getBytes());
+			        		e.printStackTrace();
+			        	}
+			        	
+					}
+					
+				}
+				
+	        	
 
 
 			}else if( inString.equals("FEAT")){
@@ -359,7 +386,7 @@ System.out.println(p1+"  "+p2);
 					outStream.write("550 not Okay \r\n".getBytes());
 				}
 
-			/* --------- TYPE -----------*/
+			/* --------- MKD -----------*/
 			}else if(inString.startsWith("MKD")){
 				if(inString.length() < 4){
 						outStream.write("501 error in arguments\r\n".getBytes());
