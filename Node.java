@@ -124,6 +124,10 @@ public class Node{
 		return dataSize;
 	}
 
+	public String getDate(){
+		return date;
+	}
+
 	public void addNextNode(Node nextNode){
 		nextNodes.add(nextNode);
 		this.dataSize = this.dataSize + nextNode.getDataSize();
@@ -169,7 +173,10 @@ public class Node{
 		}
 	}
 
+	//remove a node belonging to the current directory
 	public synchronized boolean remove(Node n){
+		if(isDirectory == false)
+			return false;
 		if(nextNodes.contains(n) == true){
 			return nextNodes.remove(n);
 		}else{
@@ -177,6 +184,28 @@ public class Node{
 			return nextNodes.remove(n);
 		}
 
+	}
+
+	//Change the name of the current Node if and only if this is a name not alreaydy used
+	//return true if name has changed, false otherwise
+	public synchronized boolean changeName(String name){
+		Node n = null;
+		Object[] array = parent.nextNodes.toArray();
+		for(int i = 0; i<parent.nextNodes.size(); i++){
+			n = (Node) array[i];
+			if(n.getName() == name){
+				return false;
+			}
+		}
+		this.name = name;
+		if(isFile){
+			this.dataFormalism = "-rw-rw-rw-\t1 user\tgroup\t"+this.dataSize+"\t" + this.date +"\t"+ this.name;
+		}
+		if(isDirectory){
+			this.dataFormalism = "drwx-xr-x-\t2 user\tgroup\t \t" + this.date +"\t"+this.name;
+		}
+		
+		return true;
 	}
 
 
