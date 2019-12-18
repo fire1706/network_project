@@ -286,17 +286,30 @@ public class FileGestion{
 
 			/* --------- CWD -----------*/
 			}else if(inString.startsWith("CWD")){
-
+				Node n = null;
 				if(inString.length() <5){
 					outStream.write("501 error in arguments\r\n".getBytes());
 				}else{
 					path = inString.substring(4);
+					System.out.println("path CWD: " + path);
 					List<Node> nextnodes = currentNode.getNextNodes();
+					if(currentNode.getName().equals(path) || currentNode.getName().equals(path)){
+						str = "250 directory changed to " + currentNode.getPath() + "\r\n";
+						outStream.write(str.getBytes());
+						isChanged = true;
+					}else if(currentNode.getParent() != null){
+						n = currentNode.getParent();
+						if(path.equals(n.getPath()) || path.equals(n.getName())){
+							currentNode = n;
+							str = "250 directory changed to " + currentNode.getPath() + "\r\n";
+							outStream.write(str.getBytes());
+							isChanged = true;
+						}
+					}
 					if(nextnodes == null){
 						outStream.write("550 Requested action not taken. Directory unavailable from here\r\n".getBytes());
 					}else{
 						Object[] array = nextnodes.toArray();
-						Node n = null;
 						int size = nextnodes.size();
 						String message = null;
 
@@ -319,17 +332,9 @@ public class FileGestion{
 								}else{
 									outStream.write("550 No access to this file/directory\r\n".getBytes());
 								}
-								
-							}else if(path.contains(currentNode.getName()) || path.contains(currentNode.getName())){
-								str = "250 directory changed to " + currentNode.getPath() + "\r\n";
-								outStream.write(str.getBytes());
-								isChanged = true;
-								break;
 							}
 						}
-						if(isChanged != true){
-							outStream.write("501 error in arguments\r\n".getBytes());
-						}
+						
 					}
 					
 				}
@@ -666,6 +671,7 @@ public class FileGestion{
 	            	if(inString.length() < 6){
 	            		outStream.write("501 error in arguments\r\n".getBytes());
 	            	}else{
+
 	            		str = inString.substring(5);
 	            		List<Node> nextnodes = currentNode.getNextNodes();
 						Object[] array = nextnodes.toArray();
@@ -680,11 +686,17 @@ public class FileGestion{
 							n = (Node) array[i];
 							if(str.contains(n.getName()) || str.contains(n.getPath())){
 								message = "350 File exists, ready for destination name\r\n";
-								nodeToChangeName = n;
-								System.out.println("node to change name: "+nodeToChangeName.getName());
-								previousRNFR = true;
-								isThere = true;
-								break;
+								if(authorized == 0 && n.getAuthorized() == 1){
+									isThere = false;
+									nodeToChangeName = null;
+								}else{
+									nodeToChangeName = n;
+									System.out.println("node to change name: "+nodeToChangeName.getName());
+									previousRNFR = true;
+									isThere = true;
+									break;
+								}
+								
 							}	
 						}
 						if(isThere){
@@ -707,9 +719,11 @@ public class FileGestion{
 	            		if(isChanged){
 	            			outStream.write("250 the file was renamed successfully\r\n".getBytes());
 	            		}else{
-	            			outStream.write("550 Requested action not taken. File unavailable\r\n".getBytes());
+	            			outStream.write("553 Requested action not taken. File name not allowed.\r\n".getBytes());
 	            		}
 	            	}
+	            	previousRNFR = false;
+	            	nodeToChangeName = null;
 	            }else{
 					outStream.write("502 command not implemented\r\n".getBytes());
 
