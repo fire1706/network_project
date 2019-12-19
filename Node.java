@@ -73,7 +73,7 @@ public class Node{
 		}else{
 			this.path = parent.getPath() + "/" + name;
 		}
-		this.dataSize = data.length;
+		this.dataSize = data.length ;
 		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
 		Date d = new Date();
 		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
