@@ -47,10 +47,10 @@ public class FileGestion{
       		Node nodeToChangeName = null;
 
 		    while(true){
-		    	System.out.println("Boucle du menu FileGestion");
 				
 		    	inString = input.readLine();
-				System.out.println("Commande recue " + inString);
+		    	//uncomment the next line if you want to observe what is going on the server side
+				//System.out.println("Commande recue " + inString);
 
 				/* --------- PWD -----------*/
 				if(inString.equals("PWD")){
@@ -215,7 +215,35 @@ public class FileGestion{
 
 				/* --------- null -----------*/
 				}else if(inString == null){
-					outStream.write("500 \r\n".getBytes());
+					outStream.write("221 bye\r\n".getBytes());
+
+	            	try{
+		            	outStream.close();
+		            	inStream.close();
+		            	if(socketClient != null){
+		            		socketClient.close();
+		            	}
+		            	if(dataChannel != null){
+		            		dataChannel.close();
+		            	}
+		            	if(dataChannelIN != null){
+		            		dataChannelIN.close();
+		            	}
+		            	if(passiveSocket != null){
+		            		passiveSocket.close();
+		            	}
+		            	if(activeSocket != null){
+		            		activeSocket.close();
+		            	}
+		            	if(data!= null){
+		            		data.close();
+		            	}
+	            	}catch(IOException e){
+	            		e.printStackTrace();
+	            	}
+	            	break;
+					
+					//outStream.write("500 \r\n".getBytes());
 
 				/* --------- CWD -----------*/
 				}else if(inString.startsWith("CWD")){
@@ -272,9 +300,14 @@ public class FileGestion{
 				/* ---------CDUP-------------*/
 				}else if(inString.equals("CDUP")){
 					try{
-						currentNode = currentNode.getParent();
-						str = "250 okay new current directory "+currentNode.getName()+"\r\n";
-						outStream.write(str.getBytes());
+						if(currentNode.getParent() != null){
+							currentNode = currentNode.getParent();
+							str = "250 okay new current directory "+currentNode.getName()+"\r\n";
+							outStream.write(str.getBytes());
+						}else{
+							outStream.write("550 not Okay \r\n".getBytes());
+						}
+						
 					}catch(Exception e){
 						outStream.write("550 not Okay \r\n".getBytes());
 					}
