@@ -116,7 +116,7 @@ public class Node{
 		return authorized;
 	}
 
-	public byte[] getData(){
+	public synchronized byte[] getData(){
 		return data;
 	}
 	public int getDataSize(){
