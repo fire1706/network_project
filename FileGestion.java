@@ -1,4 +1,4 @@
-//---------------------------------Authentification---------------------------------------------
+//---------------------------------FileGestion---------------------------------------------
 //
 // This function has for purposes to handle the management of the files/directories and
 // the different types of connection on IPV4 and IPV6 in passive and active mode.
