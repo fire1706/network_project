@@ -7,13 +7,10 @@
 //-----------------------------------------------------------------------------------------
 
 
-
 import java.util.*;
 import java.lang.*;
 import java.io.*;
 import java.net.*;
-import java.awt.*;
-import javax.imageio.ImageIO;
 
 public class Management extends Thread {
 
@@ -30,8 +27,6 @@ public class Management extends Thread {
       public void run(){
         try{
 
-          System.out.println("Let's start the game !");
-
           //-------------------------Connection du port 21xx-----------------------------------
           InputStream inCommandStream = socketManagement.getInputStream();
           OutputStream outCommandStream = socketManagement.getOutputStream();
@@ -47,7 +42,6 @@ public class Management extends Thread {
 
           Authentification authentification = new Authentification(socketManagement);
           int typeOfConnection = authentification.authented(); // =O normal , =1 can access private folder
-          System.out.println("type of connection: " + typeOfConnection);
           //------------------------------------------------------------------------------------
 
           //---------------------------File Gestion---------------------------------------------
