@@ -1,4 +1,9 @@
-//Authors: Bastin Thomas & Dachet Victor
+//---------------------------------FileVirtuel---------------------------------------------
+//
+// This object has for purpose to create virtual files like in the assignment.
+//
+//Copyright (c) 2019 by Thomas BASTIN & Victor Dachet. All Rights Reserved.
+//-----------------------------------------------------------------------------------------
 
 import java.util.*;
 import java.lang.*;
@@ -46,57 +51,8 @@ public class FileVirtuel{
 			Node myimage = new Node("myimage.bmp", myImg, root, 0);
 			root.addNextNode(myimage);
 
-			System.out.println(myimage.getPath());
-			System.out.println(privateFolder.getPath());
-			System.out.println(secret.getPath());
-			
-			System.out.println("----Date Format----");
-			System.out.println(myimage.getDataFormalism());
-
-			/* A ajouter si tu veux rajouter un dossier contenant un fichier dans private
-			Node folder = new Node("folder", privateFolder);
-			privateFolder.addNextNode(folder);
-
-			Node text = new Node("text.txt", folder);
-			folder.addNextNode(text);
-			*/
-			int size = root.getSizeContent();
-
-			String[] str = new String[size];
-			str = root.getDirectoryContent();
-			for(int i=0; i<size; i++){
-				System.out.println(str[i]);
-			}
-			//System.out.println(str2);
-			
-
 		}catch(NodeException e){
 			e.printStackTrace();
 		}
-
-
 	}
-
-	public String[] list(Node n){
-		String[] str = null;
-		try{
-
-
-			int size = n.getSizeContent();
-
-			str = new String[size];
-			str = n.getDirectoryContent();
-			for(int i=0; i<size; i++){
-				System.out.println(str[i]);
-			}
-		}catch(NodeException e){
-			e.printStackTrace();
-		}
-		return str;
-	}
-
-	
-
-
-
 }
