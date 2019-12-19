@@ -1,4 +1,11 @@
-//Authors: Bastin Thomas & Dachet Victor
+//---------------------------------Node---------------------------------------------
+//
+// This object has for purposes to handle creation/manipulation of File/Directory
+// The main difference between File and directory is that File has some data but 
+// no nextnodes where the directory has exactly the inverse
+//
+//Copyright (c) 2019 by Thomas BASTIN & Victor Dachet. All Rights Reserved.
+//-----------------------------------------------------------------------------------------
 
 import java.util.*;
 import java.lang.*;
@@ -21,12 +28,7 @@ public class Node{
 	/*--------------- Constructors ---------------*/
 	Node(){}
 
-	// Node(String name){
-	// 	this.name = name;
-	// 	this.isDirectory = true;
-
-	// }
-
+	//Directory Constructor
 	Node(String name, boolean isRoot, int authorized){
 		this.name = name;
 		this.isDirectory = true;
@@ -37,11 +39,9 @@ public class Node{
 		this.date = simpledateformat.format(d);
 		this.dataFormalism = "drwx-xr-x-\t2 user\tgroup\t \t" + this.date +"\t"+this.name;
 		this.authorized = authorized;
-		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n"	;
-
 	}
 
-
+	//Directory Constructor
 	Node(String name, Node parent, int authorized) throws NodeException{
 		if(parent.isDirectory() == false)
 			throw new NodeException("parent is not a directory");
@@ -60,7 +60,7 @@ public class Node{
 		this.authorized = authorized;
 	}
 	
-
+	//File Constructor
 	Node(String name, byte[] data, Node parent, int authorized) throws NodeException{
 		if(parent.isDirectory() == false)
 			throw new NodeException("parent is not a directory");
@@ -74,7 +74,6 @@ public class Node{
 			this.path = parent.getPath() + "/" + name;
 		}
 		this.dataSize = data.length ;
-		//this.dataFormalism = "-rwxr-xr-x 1 100 100 14757 a.out\r\n";
 		Date d = new Date();
 		SimpleDateFormat simpledateformat = new SimpleDateFormat("MM-dd-yyyy");
 		this.date = simpledateformat.format(d);
@@ -132,12 +131,6 @@ public class Node{
 		nextNodes.add(nextNode);
 		this.dataSize = this.dataSize + nextNode.getDataSize();
 	}
-
-	
-
-	
-
-	
 
 	public String getDataFormalism(){
 		return dataFormalism;
