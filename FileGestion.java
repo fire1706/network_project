@@ -35,9 +35,6 @@ public class FileGestion{
 	public void menu(){
 		String str = new String();
 		try{
-			System.out.println("Welcome in the menu:");
-			System.out.println("Send HELP if you need some help.");
-
 			InputStream inStream = socketClient.getInputStream();
       		OutputStream outStream = socketClient.getOutputStream();
 
@@ -251,7 +248,7 @@ public class FileGestion{
 							for(int i = 0; i<size ; i++){
 								n = (Node) array[i];
 								//attention plus tard changer inString par path
-								if(path.contains(n.getName()) || path.contains(n.getPath())){
+								if(path.equals(n.getName()) || path.equals(n.getPath())){
 									if(n.getAuthorized() == 0){//everybody has access
 										currentNode = n;
 										str = "250 directory changed to " + currentNode.getPath() + "\r\n";
@@ -332,7 +329,7 @@ public class FileGestion{
 							boolean isRemoved = false;
 							for(int i = 0; i<size; i++){
 								n = (Node) array[i];
-								if(path.contains(n.getName()) || path.contains(n.getPath())){
+								if(path.equals(n.getName()) || path.equals(n.getPath())){
 									if(authorized == 0 && n.getAuthorized() == 1){
 										isRemoved = false;
 										break;
@@ -367,7 +364,7 @@ public class FileGestion{
 
 							for(int i = 0; i<size; i++){
 								n = (Node) array[i];
-								if(path.contains(n.getName()) || path.contains(n.getPath())){
+								if(path.equals(n.getName()) || path.equals(n.getPath())){
 									isPresent = true;
 								}
 							}
@@ -585,7 +582,7 @@ public class FileGestion{
 
 						for(int i = 0; i<size ; i++){
 							n = (Node) array[i];
-							if(str.contains(n.getName()) || str.contains(n.getPath())){
+							if(str.equals(n.getName()) || str.equals(n.getPath())){
 								message = "213 "+n.getDate() + "\r\n";
 								isThere = true;
 								break;
@@ -615,7 +612,7 @@ public class FileGestion{
 
 						for(int i = 0; i<size ; i++){
 							n = (Node) array[i];
-							if(str.contains(n.getName()) || str.contains(n.getPath())){
+							if(str.equals(n.getName()) || str.equals(n.getPath())){
 								message = "350 File exists, ready for destination name\r\n";
 								if(authorized == 0 && n.getAuthorized() == 1){
 									isThere = false;
